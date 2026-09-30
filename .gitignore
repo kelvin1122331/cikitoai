@@ -1,0 +1,21 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+.vite
+coverage
+
+# Bundel embed hasil build (dibuat ulang lewat `npm run build:embed`)
+public/embed
+
+# Berkas ekstensi hasil build (dibuat ulang lewat `npm run build:extension`)
+extension/widget.js
+extension/ai-core.mjs
+extension/icons
+public/icons
