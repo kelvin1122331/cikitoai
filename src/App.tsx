@@ -2,7 +2,15 @@ import { useCallback, useEffect, useState } from 'react'
 import type { WidgetStage } from './types'
 import { KEYS, loadRaw, saveJSON } from './lib/storage'
 import { setRuntime } from './lib/runtime'
-import { Landing } from './components/Landing'
+import { usePathname, useScrollReset } from './lib/router'
+import { Shell } from './site/Shell'
+import { Beranda } from './pages/Beranda'
+import { Fitur } from './pages/Fitur'
+import { CaraKerja } from './pages/CaraKerja'
+import { Penyedia } from './pages/Penyedia'
+import { BawaKeMana } from './pages/BawaKeMana'
+import { Faq } from './pages/Faq'
+import { NotFound } from './pages/NotFound'
 import { Widget } from './components/widget/Widget'
 import PopoutApp from './PopoutApp'
 
@@ -19,6 +27,8 @@ export default function App() {
 function MainApp() {
   const [stage, setStage] = useState<WidgetStage>('hidden')
   const [theme, setTheme] = useState<'light' | 'dark'>(() => loadRaw(KEYS.theme, 'dark'))
+  const pathname = usePathname()
+  useScrollReset(pathname)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -44,14 +54,37 @@ function MainApp() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  const active = stage !== 'hidden'
+  const page = (() => {
+    switch (pathname) {
+      case '/':
+        return <Beranda onLaunch={launch} active={active} />
+      case '/fitur':
+        return <Fitur onLaunch={launch} active={active} />
+      case '/cara-kerja':
+        return <CaraKerja onLaunch={launch} active={active} />
+      case '/penyedia':
+        return <Penyedia onLaunch={launch} active={active} />
+      case '/bawa-ke-mana-saja':
+        return <BawaKeMana onLaunch={launch} active={active} />
+      case '/faq':
+        return <Faq onLaunch={launch} active={active} />
+      default:
+        return <NotFound path={pathname} />
+    }
+  })()
+
   return (
     <>
-      <Landing
+      <Shell
         onLaunch={launch}
-        active={stage !== 'hidden'}
+        active={active}
         theme={theme}
         onToggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-      />
+      >
+        {page}
+      </Shell>
+      {/* Widget hidup di luar halaman: obrolan tetap jalan saat berpindah menu. */}
       <Widget stage={stage} onStageChange={setStage} />
     </>
   )

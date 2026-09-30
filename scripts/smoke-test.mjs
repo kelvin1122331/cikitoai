@@ -112,24 +112,84 @@ const check = (name, cond, extra = '') => {
   console.log(`${cond ? '✅' : '❌'} ${name}${extra && !cond ? ' → ' + extra : ''}`)
 }
 
-/* 1 — landing tampil */
-check('Landing ter-render', /CikitoAI/.test(document.body.textContent))
+/* 1 — beranda tampil */
+check('Beranda ter-render', /CikitoAI/.test(document.body.textContent))
 check('Ada tombol Jalankan', !!byText('button', 'Jalankan'))
 check('Widget belum muncul', !$('[role="dialog"]') && !$('[aria-label^="Buka CikitoAI"]'))
 
-/* 1b — bagian distribusi: cuplikan tempel & bookmarklet */
-check('Ada bagian "Bawa ke mana saja"', !!$('#bawa-ke-mana-saja'))
+/* 1b — tiap menu membuka HALAMAN tersendiri (bukan gulir di satu halaman) */
+const goto = async (href) => {
+  const link = $$('a').find((a) => a.getAttribute('href') === href)
+  if (!link) throw new Error(`tautan ${href} tidak ditemukan`)
+  await click(link)
+}
+
+check(
+  'Beranda memuat kartu menu ke halaman lain',
+  /Setiap topik punya halamannya sendiri/.test(document.body.textContent),
+)
+
+await goto('/cara-kerja')
+check(
+  'Menu "Cara kerja" membuka halaman sendiri',
+  window.location.pathname === '/cara-kerja' && /Tiga langkah/.test(document.body.textContent),
+)
+check(
+  'Isi halaman lain tidak ikut dirender',
+  !/Setiap topik punya halamannya sendiri/.test(document.body.textContent),
+)
+check('Judul tab ikut berubah', /Cara kerja/.test(document.title))
+
+await goto('/fitur')
+check(
+  'Menu "Fitur" membuka halaman sendiri',
+  window.location.pathname === '/fitur' && /Dibuat semaksimal mungkin/.test(document.body.textContent),
+)
+
+await goto('/penyedia')
+check(
+  'Menu "Penyedia" membuka halaman sendiri',
+  window.location.pathname === '/penyedia' &&
+    /Terhubung ke penyedia mana pun/.test(document.body.textContent),
+)
+
+await goto('/faq')
+check(
+  'Menu "FAQ" membuka halaman sendiri',
+  window.location.pathname === '/faq' &&
+    /Pertanyaan yang sering muncul/.test(document.body.textContent),
+)
+
+await goto('/bawa-ke-mana-saja')
+check('Menu "Bawa ke mana saja" membuka halaman sendiri', !!$('#bawa-ke-mana-saja'))
 check(
   'Cuplikan skrip tempel tampil',
   /embed\/cikito-widget\.js/.test($('#bawa-ke-mana-saja').textContent),
 )
 await click(byText('#bawa-ke-mana-saja button', 'Bookmarklet'))
-const bm = $$('#bawa-ke-mana-saja a').find((a) => (a.getAttribute('href') || '').startsWith('javascript:'))
+const bm = $$('#bawa-ke-mana-saja a').find((a) =>
+  (a.getAttribute('href') || '').startsWith('javascript:'),
+)
 check(
   'Bookmarklet punya href javascript: yang bisa diseret',
   !!bm && bm.getAttribute('href').includes('/embed/cikito-widget.js'),
 )
-await click(byText('#bawa-ke-mana-saja button', 'Tempel di website'))
+
+/* Back peramban & halaman 404 */
+await act(async () => {
+  window.history.back()
+})
+await wait(60)
+check('Tombol Back peramban kembali ke halaman sebelumnya', window.location.pathname === '/faq')
+
+await act(async () => {
+  window.history.pushState(null, '', '/halaman-hantu')
+  window.dispatchEvent(new window.Event('popstate'))
+})
+check('Rute tak dikenal menampilkan halaman 404', /404/.test(document.body.textContent))
+
+await goto('/')
+check('Kembali ke beranda', window.location.pathname === '/')
 
 /* 2 — tekan Jalankan → bubble muncul */
 await click(byText('button', 'Jalankan'))

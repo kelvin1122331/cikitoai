@@ -65,7 +65,7 @@ npm start            # server Node tanpa dependensi (statis + /api), PORT=3000
 Perintah lain:
 
 ```bash
-npm run smoke            # smoke test end-to-end di jsdom (50 pemeriksaan, tanpa jaringan)
+npm run smoke            # smoke test end-to-end di jsdom (60 pemeriksaan, tanpa jaringan)
 npm run build:embed      # bundel tempel  → public/embed/cikito-widget.js
 npm run build:icons      # ikon PWA       → public/icons/*.png (digambar tanpa dependensi)
 npm run build:extension  # paket ekstensi → extension/ (widget.js, ai-core.mjs, ikon)
@@ -171,6 +171,27 @@ perlu dibungkus Electron/Tauri.
 
 Logika penerjemah penyedia dipakai bersama oleh ketiganya lewat `shared/ai-core.mjs`.
 
+## 🗺️ Halaman
+
+Setiap menu adalah **halaman tersendiri** dengan URL sendiri — bukan gulir di satu halaman
+panjang. Routing memakai History API lewat router mungil buatan sendiri (`src/lib/router.tsx`,
+tanpa dependensi): bisa di-bookmark, dibuka di tab baru dengan Ctrl/⌘ + klik, dan tombol
+Back/Forward peramban tetap bekerja.
+
+| URL | Halaman | Isi |
+| --- | --- | --- |
+| `/` | Beranda | Hero, tombol Jalankan, kartu menuju setiap halaman |
+| `/fitur` | Fitur | Enam fitur inti + bagian responsif |
+| `/cara-kerja` | Cara kerja | Tiga langkah + catatan (model bebas, mode demo, tes koneksi) |
+| `/penyedia` | Penyedia | Katalog 13 penyedia + tiga bentuk API yang dinormalisasi |
+| `/bawa-ke-mana-saja` | Bawa ke mana saja | Skrip tempel, bookmarklet, pop-out, ekstensi, PWA |
+| `/faq` | FAQ | Tanya jawab |
+| `/?cikito=popout` | Jendela mengambang | Hanya UI chat, untuk Document PiP / popup / PWA |
+| lainnya | 404 | Halaman tidak ditemukan + jalan pintas ke menu lain |
+
+Widget sengaja dirender **di luar** halaman, jadi obrolan yang sedang berjalan tidak terputus
+ketika kamu berpindah menu.
+
 ## ⌨️ Pintasan
 
 | Tombol | Fungsi |
@@ -193,9 +214,20 @@ extension/           ekstensi Chrome/Edge MV3 (lihat extension/README.md)
 src/
   embed/             bundel tempel: mount Shadow DOM + API global CikitoAI
   PopoutApp.tsx      halaman jendela mengambang (/?cikito=popout)
+  site/
+    Shell.tsx        kerangka situs: latar, navbar (menu = halaman), footer
+    routes.ts        daftar rute: path, label, judul tab, deskripsi, ikon
+    parts.tsx        PageHero, Pager, CtaBanner, SectionHeading, mockup
+  pages/
+    Beranda.tsx      hero + kartu menu ke setiap halaman
+    Fitur.tsx        daftar fitur + bagian responsif
+    CaraKerja.tsx    tiga langkah + catatan tambahan
+    Penyedia.tsx     katalog 13 penyedia + tiga bentuk API
+    BawaKeMana.tsx   halaman distribusi (memakai Distribusi.tsx)
+    Faq.tsx          tanya jawab
+    NotFound.tsx     halaman 404
   components/
-    Landing.tsx      halaman utama (hero, fitur, cara kerja, FAQ, footer)
-    Distribusi.tsx   bagian "Bawa ke mana saja" (skrip, bookmarklet, pop-out, ekstensi)
+    Distribusi.tsx   isi "Bawa ke mana saja" (skrip, bookmarklet, pop-out, ekstensi, PWA)
     Markdown.tsx     renderer Markdown → React (tanpa dangerouslySetInnerHTML)
     ui.tsx           primitif UI kecil
     widget/
@@ -206,14 +238,14 @@ src/
       ChatView.tsx   ruang chat: streaming, saran, komposer, gulir pintar
       MessageItem.tsx balon pesan: markdown, salin, buat ulang, hapus
   hooks/             usePointerDrag, useChat, useMediaQuery/useViewport, useInstallApp
-  lib/               providers, runtime (mode & apiBase), stream/direct/extension, storage, utils
+  lib/               router (mini, History API), providers, runtime, stream/direct/extension, storage, utils
 public/
   demo-tempel.html   contoh "website orang lain" yang menempelkan widget
   manifest.webmanifest  metadata PWA (nama, ikon, start_url, standalone)
   sw.js              service worker: installability + cangkang offline
   embed/, icons/     hasil build (tidak di-commit)
 scripts/
-  smoke-test.mjs     uji alur pengguna end-to-end di jsdom (50 pemeriksaan)
+  smoke-test.mjs     uji alur pengguna end-to-end di jsdom (60 pemeriksaan)
   build-extension.mjs menyiapkan folder extension/
   make-icons.mjs     menggambar ikon PWA; encoder PNG ada di scripts/lib/icon.mjs
 ```

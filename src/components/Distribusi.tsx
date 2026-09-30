@@ -146,23 +146,9 @@ export function Distribusi() {
   }
 
   return (
-    <section id="bawa-ke-mana-saja" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <span className="text-xs font-bold tracking-[0.18em] text-brand-600 uppercase dark:text-brand-300">
-          Bawa ke mana saja
-        </span>
-        <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Satu bubble, di website mana pun
-        </h2>
-        <p className="mt-4 text-ink-600 dark:text-ink-300">
-          Widget yang sama bisa keluar dari halaman ini: tempel di situs lain, panggil lewat
-          bookmarklet, lepas jadi jendela mengambang di atas aplikasi lain, atau pasang sebagai
-          ekstensi peramban.
-        </p>
-      </div>
-
+    <section id="bawa-ke-mana-saja" className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
       {/* Tab */}
-      <div className="mask-fade-x mt-10 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      <div className="mask-fade-x -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <div className="mx-auto flex w-max gap-1.5 rounded-2xl border border-black/[0.07] bg-white/70 p-1.5 backdrop-blur dark:border-white/[0.08] dark:bg-white/[0.04]">
           {TABS.map((t) => (
             <button
