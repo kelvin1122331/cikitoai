@@ -6,6 +6,7 @@ import {
   Minimize2,
   Minus,
   Monitor,
+  PictureInPicture2,
   Scaling,
   Smartphone,
   Sparkles,
@@ -14,7 +15,7 @@ import {
 } from 'lucide-react'
 import type { Size } from '../../types'
 import { usePointerDrag } from '../../hooks/usePointerDrag'
-import { cn, clamp } from '../../lib/utils'
+import { cn, clamp, fontPx } from '../../lib/utils'
 import { IconButton } from '../ui'
 
 export interface Geometry {
@@ -49,6 +50,10 @@ interface Props {
   headerExtras?: ReactNode
   onMinimize: () => void
   onClose: () => void
+  /** Label tombol tutup — berbeda saat widget ditempel di website lain. */
+  closeLabel?: string
+  /** Lepas panel ke jendela mengambang terpisah (opsional). */
+  onPopOut?: () => void
   /** Animasikan perpindahan/perubahan ukuran (mis. saat memakai preset). */
   animate?: boolean
   children: ReactNode
@@ -151,6 +156,8 @@ export function Panel({
   headerExtras,
   onMinimize,
   onClose,
+  closeLabel = 'Tutup widget',
+  onPopOut,
   animate,
   children,
 }: Props) {
@@ -237,7 +244,7 @@ export function Panel({
         )}px`,
         transform: sheetOffset ? `translateY(${sheetOffset}px)` : undefined,
         transition: sheetOffset ? 'none' : 'transform 260ms cubic-bezier(0.22,1,0.36,1)',
-        fontSize: `${14 * scale}px`,
+        fontSize: fontPx(scale),
       }
     : maximized
       ? { inset: 16, fontSize: `${14 * scale}px` }
@@ -246,7 +253,7 @@ export function Panel({
           top: geometry.y,
           width: geometry.w,
           height: geometry.h,
-          fontSize: `${14 * scale}px`,
+          fontSize: fontPx(scale),
         }
 
   return (
@@ -415,6 +422,17 @@ export function Panel({
             )}
           </div>
 
+          {onPopOut && !isMobile && (
+            <IconButton
+              onClick={onPopOut}
+              aria-label="Lepas ke jendela terpisah"
+              title="Lepas ke jendela mengambang (tetap tampil di atas aplikasi lain)"
+              className="size-7"
+            >
+              <PictureInPicture2 className="size-4" />
+            </IconButton>
+          )}
+
           {!isMobile && (
             <IconButton
               onClick={onToggleMaximize}
@@ -435,7 +453,13 @@ export function Panel({
             {isMobile ? <ChevronDown className="size-4" /> : <Minus className="size-4" />}
           </IconButton>
 
-          <IconButton onClick={onClose} tone="danger" aria-label="Tutup widget" title="Tutup" className="size-7">
+          <IconButton
+            onClick={onClose}
+            tone="danger"
+            aria-label={closeLabel}
+            title={closeLabel}
+            className="size-7"
+          >
             <X className="size-4" />
           </IconButton>
         </div>

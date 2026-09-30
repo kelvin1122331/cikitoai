@@ -12,6 +12,10 @@ sampai ultrawide.
 Tombol "Jalankan"  →  Bubble (digeser)  →  Form API  →  Tombol "Jalankan"  →  Chat AI
 ```
 
+Dan bubble-nya **tidak terkurung di website ini**: tempel di situs lain dengan satu baris
+`<script>`, panggil lewat bookmarklet, lepas jadi **jendela mengambang** di atas aplikasi lain,
+atau pasang sebagai **ekstensi peramban**. Lihat [Bawa ke mana saja](#-bawa-ke-mana-saja).
+
 ---
 
 ## ✨ Fitur
@@ -26,6 +30,7 @@ Tombol "Jalankan"  →  Bubble (digeser)  →  Form API  →  Tombol "Jalankan" 
 | **Markdown** | Judul, daftar, tabel, kutipan, tautan, blok kode dengan tombol salin (renderer sendiri, aman XSS) |
 | **Responsif** | Panel mengambang di desktop, bottom sheet di ponsel, target sentuh lega |
 | **Privasi** | API key hanya di `localStorage`; backend hanya me-relay, tidak menyimpan & tidak mencatat log |
+| **Bisa dibawa keluar** | Bundel tempel (Shadow DOM), bookmarklet, jendela mengambang (Document PiP), ekstensi MV3 |
 | **Lainnya** | Tema gelap/terang, mode demo tanpa API key, tes koneksi, muat daftar model, riwayat chat tersimpan |
 
 ## 🔌 Penyedia yang didukung
@@ -59,8 +64,85 @@ npm start            # server Node tanpa dependensi (statis + /api), PORT=3000
 Perintah lain:
 
 ```bash
-npm run smoke        # smoke test end-to-end di jsdom (26 pemeriksaan, tanpa jaringan)
+npm run smoke            # smoke test end-to-end di jsdom (44 pemeriksaan, tanpa jaringan)
+npm run build:embed      # bundel tempel  → public/embed/cikito-widget.js
+npm run build:extension  # paket ekstensi → extension/ (widget.js, ai-core.mjs, ikon)
 ```
+
+> `npm run dev` dan `npm run build` otomatis membangun bundel tempel lebih dulu.
+
+## 🌍 Bawa ke mana saja
+
+Empat cara memakai widget yang sama di luar halaman ini. Semuanya memakai satu bundel:
+`public/embed/cikito-widget.js` (±108 kB gzip, sudah termasuk React dan CSS-nya).
+
+### 1. Tempel di website mana pun
+
+```html
+<script
+  src="https://domain-kamu.com/embed/cikito-widget.js"
+  data-api-base="https://domain-kamu.com"
+  data-transport="auto"
+  data-theme="auto"
+  defer
+></script>
+```
+
+Widget dirender di dalam **Shadow DOM**, jadi CSS situs tuan rumah tidak bocor masuk dan CSS widget
+tidak bocor keluar. Contoh situs tuan rumah tersedia di `/demo-tempel.html` (halaman serif biasa
+tanpa Tailwind, dengan aturan CSS agresif — widget tetap utuh).
+
+| Atribut | Arti |
+| --- | --- |
+| `data-api-base` | Asal backend CikitoAI. Default: asal berkas skrip. |
+| `data-transport` | `auto` (bawaan) · `proxy` (lewat backend) · `direct` (browser → penyedia). |
+| `data-theme` | `auto` (bawaan) · `light` · `dark`. |
+| `data-open` | `true` → langsung buka panel, bukan bubble. |
+| `data-hotkey` | `true` → aktifkan `Ctrl/⌘ + K` (mati secara bawaan agar tidak bentrok). |
+| `data-provider`, `data-model`, `data-api-key`, `data-system` | Isian awal (tetap bisa diubah pengguna). |
+| `data-skip-setup` | `true` → langsung ke chat bila konfigurasi awal sudah lengkap. |
+| `data-z-index` | Ubah tumpukan (bawaan `2147483000`). |
+| `data-storage-prefix` | Awalan kunci `localStorage`. |
+| `data-auto="false"` | Jangan pasang otomatis; panggil `CikitoAI.init({...})` sendiri. |
+
+API global: `CikitoAI.init(opts)`, `.open()`, `.close()`, `.toggle()`, `.hide()`, `.show()`,
+`.destroy()`, `.stage`, `.mounted`.
+
+### 2. Bookmarklet
+
+Di bagian **Bawa ke mana saja** pada halaman utama tersedia tombol yang bisa diseret ke bilah
+bookmark. Klik bookmark itu di website mana pun → bubble muncul di sana.
+Catatan jujur: situs dengan *Content Security Policy* ketat (GitHub, perbankan) akan memblokirnya —
+untuk kasus itu pakai ekstensi.
+
+### 3. Jendela mengambang (pop-out)
+
+Ikon **lepas jendela** di header panel memindahkan obrolan ke jendela mengambang sungguhan lewat
+[Document Picture-in-Picture](https://developer.chrome.com/docs/web-platform/document-picture-in-picture)
+(Chrome/Edge 116+), sehingga tetap terlihat di atas aplikasi lain. Peramban lain otomatis memakai
+jendela popup biasa. Halaman yang dimuat adalah `/?cikito=popout`, dan konfigurasi dititipkan lewat
+**hash URL** (tidak pernah dikirim ke server) lalu langsung dihapus dari address bar.
+
+### 4. Ekstensi peramban (Manifest V3)
+
+```bash
+npm run build:extension
+# chrome://extensions → Mode pengembang → Muat yang belum dipaketkan → pilih folder extension/
+```
+
+Cara paling bebas hambatan: **tanpa backend**, **tanpa CORS**, tetap jalan di situs ber-CSP ketat,
+karena permintaan jaringan dijembatani service worker ekstensi. Detail: [`extension/README.md`](extension/README.md).
+
+### Jalur pengiriman permintaan
+
+| Mode | Alur | Kapan dipakai |
+| --- | --- | --- |
+| `proxy` | browser → `/api/chat` → penyedia | Bawaan situs ini. Paling kompatibel. |
+| `direct` | browser → penyedia | Tanpa backend (hosting statis). Tergantung CORS penyedia. |
+| `auto` | coba `proxy`, jatuh ke `direct` bila backend tak terjangkau | Bawaan bundel tempel. |
+| `extension` | halaman → service worker ekstensi → penyedia | Dipakai ekstensi. Bebas CORS. |
+
+Logika penerjemah penyedia dipakai bersama oleh ketiganya lewat `shared/ai-core.mjs`.
 
 ## ⌨️ Pintasan
 
@@ -75,12 +157,18 @@ npm run smoke        # smoke test end-to-end di jsdom (26 pemeriksaan, tanpa jar
 ## 🧱 Struktur
 
 ```
+shared/
+  ai-core.mjs        inti penerjemah penyedia — dipakai backend, browser, & ekstensi
 server/
   api.mjs            middleware /api (chat SSE, daftar model, health) — tanpa dependensi
   index.mjs          server produksi: statis dist/ + API yang sama
+extension/           ekstensi Chrome/Edge MV3 (lihat extension/README.md)
 src/
+  embed/             bundel tempel: mount Shadow DOM + API global CikitoAI
+  PopoutApp.tsx      halaman jendela mengambang (/?cikito=popout)
   components/
     Landing.tsx      halaman utama (hero, fitur, cara kerja, FAQ, footer)
+    Distribusi.tsx   bagian "Bawa ke mana saja" (skrip, bookmarklet, pop-out, ekstensi)
     Markdown.tsx     renderer Markdown → React (tanpa dangerouslySetInnerHTML)
     ui.tsx           primitif UI kecil
     widget/
@@ -91,9 +179,13 @@ src/
       ChatView.tsx   ruang chat: streaming, saran, komposer, gulir pintar
       MessageItem.tsx balon pesan: markdown, salin, buat ulang, hapus
   hooks/             usePointerDrag, useChat, useMediaQuery/useViewport
-  lib/               providers (katalog), stream (SSE client), storage, utils
+  lib/               providers, runtime (mode & apiBase), stream/direct/extension, storage, utils
+public/
+  demo-tempel.html   contoh "website orang lain" yang menempelkan widget
+  embed/             hasil build bundel tempel (tidak di-commit)
 scripts/
-  smoke-test.mjs     uji alur pengguna end-to-end di jsdom
+  smoke-test.mjs     uji alur pengguna end-to-end di jsdom (44 pemeriksaan)
+  build-extension.mjs menyiapkan folder extension/ + membuat ikon PNG tanpa dependensi
 ```
 
 ## 🔒 Catatan keamanan
@@ -102,6 +194,10 @@ scripts/
   lalu diteruskan langsung ke penyedia. Tidak ditulis ke disk, tidak masuk log.
 - Backend dibutuhkan karena sebagian besar penyedia AI memblokir panggilan langsung dari browser
   (CORS). Kalau di-deploy publik, tambahkan autentikasi/rate limit sendiri di depan `/api`.
+- Mode `direct` dan ekstensi tidak melewati backend sama sekali: API key dikirim langsung dari
+  perangkat kamu ke penyedia.
+- `data-api-key` pada tag `<script>` akan terlihat di HTML halaman — pakai hanya untuk demo
+  internal, bukan situs publik.
 - Renderer Markdown membangun elemen React (bukan `innerHTML`) dan menyaring skema URL berbahaya.
 
 ---

@@ -13,7 +13,8 @@ interface Props {
   onMove: (pos: Point, animate?: boolean) => void
   onDragEnd: (pos: Point) => void
   onOpen: () => void
-  onDismiss: () => void
+  /** Bila kosong, tombol sembunyikan tidak ditampilkan (mis. saat ditempel di situs lain). */
+  onDismiss?: () => void
 }
 
 export function Bubble({
@@ -97,21 +98,23 @@ export function Bubble({
       </button>
 
       {/* Tombol sembunyikan */}
-      <button
-        type="button"
-        onClick={onDismiss}
-        aria-label="Sembunyikan widget"
-        className={cn(
-          'absolute -top-1 -left-1 grid size-6 place-items-center rounded-full border border-black/5',
-          'bg-white text-ink-500 shadow-md transition-all duration-200 hover:scale-110 hover:text-red-500',
-          'dark:border-white/10 dark:bg-ink-800 dark:text-ink-300',
-          'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
-          '[@media(hover:none)]:opacity-100',
-          dragging && 'pointer-events-none opacity-0',
-        )}
-      >
-        <X className="size-3.5" strokeWidth={2.5} />
-      </button>
+      {onDismiss && (
+        <button
+          type="button"
+          onClick={onDismiss}
+          aria-label="Sembunyikan widget"
+          className={cn(
+            'absolute -top-1 -left-1 grid size-6 place-items-center rounded-full border border-black/5',
+            'bg-white text-ink-500 shadow-md transition-all duration-200 hover:scale-110 hover:text-red-500',
+            'dark:border-white/10 dark:bg-ink-800 dark:text-ink-300',
+            'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+            '[@media(hover:none)]:opacity-100',
+            dragging && 'pointer-events-none opacity-0',
+          )}
+        >
+          <X className="size-3.5" strokeWidth={2.5} />
+        </button>
+      )}
 
       {/* Balon petunjuk pertama kali */}
       {hint && !dragging && (

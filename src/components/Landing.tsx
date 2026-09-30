@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { PROVIDERS } from '../lib/providers'
 import { cn } from '../lib/utils'
+import { Distribusi } from './Distribusi'
 
 interface Props {
   onLaunch: () => void
@@ -128,6 +129,7 @@ export function Landing({ onLaunch, active, theme, onToggleTheme }: Props) {
     { href: '#fitur', label: 'Fitur' },
     { href: '#cara-kerja', label: 'Cara kerja' },
     { href: '#penyedia', label: 'Penyedia' },
+    { href: '#bawa-ke-mana-saja', label: 'Bawa ke mana saja' },
     { href: '#faq', label: 'FAQ' },
   ]
 
@@ -421,6 +423,9 @@ export function Landing({ onLaunch, active, theme, onToggleTheme }: Props) {
           </button>
         </div>
       </section>
+
+      {/* ------------------------------------------------- bawa ke mana saja */}
+      <Distribusi />
 
       {/* -------------------------------------------------------- responsif */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">

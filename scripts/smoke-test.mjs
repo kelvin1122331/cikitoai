@@ -28,6 +28,8 @@ globalThis.Event = window.Event
 globalThis.MouseEvent = window.MouseEvent
 globalThis.KeyboardEvent = window.KeyboardEvent
 globalThis.localStorage = window.localStorage
+globalThis.location = window.location
+globalThis.history = window.history
 globalThis.requestAnimationFrame = window.requestAnimationFrame.bind(window)
 globalThis.cancelAnimationFrame = window.cancelAnimationFrame.bind(window)
 globalThis.getComputedStyle = window.getComputedStyle.bind(window)
@@ -114,6 +116,20 @@ check('Landing ter-render', /CikitoAI/.test(document.body.textContent))
 check('Ada tombol Jalankan', !!byText('button', 'Jalankan'))
 check('Widget belum muncul', !$('[role="dialog"]') && !$('[aria-label^="Buka CikitoAI"]'))
 
+/* 1b — bagian distribusi: cuplikan tempel & bookmarklet */
+check('Ada bagian "Bawa ke mana saja"', !!$('#bawa-ke-mana-saja'))
+check(
+  'Cuplikan skrip tempel tampil',
+  /embed\/cikito-widget\.js/.test($('#bawa-ke-mana-saja').textContent),
+)
+await click(byText('#bawa-ke-mana-saja button', 'Bookmarklet'))
+const bm = $$('#bawa-ke-mana-saja a').find((a) => (a.getAttribute('href') || '').startsWith('javascript:'))
+check(
+  'Bookmarklet punya href javascript: yang bisa diseret',
+  !!bm && bm.getAttribute('href').includes('/embed/cikito-widget.js'),
+)
+await click(byText('#bawa-ke-mana-saja button', 'Tempel di website'))
+
 /* 2 — tekan Jalankan → bubble muncul */
 await click(byText('button', 'Jalankan'))
 const bubbleBtn = $('[aria-label^="Buka CikitoAI"]')
@@ -156,6 +172,7 @@ check('Pesan pengguna tampil', /halo cikito/.test(bodyText))
 check('Jawaban AI (streaming) diterima', /Selamat mencoba/.test(bodyText))
 check('Markdown tabel ter-render', !!$('[role="dialog"] table'))
 check('Blok kode punya tombol salin', !!$('[aria-label="Salin kode"]'))
+check('Tombol lepas ke jendela tersedia', !!$('[aria-label="Lepas ke jendela terpisah"]'))
 
 /* 7 — ubah ukuran panel lewat pegangan */
 const seHandle = $('[aria-label="Ubah ukuran dari sisi se"]')
@@ -194,7 +211,54 @@ check('Esc mengecilkan panel', !$('[role="dialog"]'))
 await click($('[aria-label="Sembunyikan widget"]'))
 check('Bubble bisa disembunyikan', !$('[aria-label^="Buka CikitoAI"]'))
 
-/* 12 — persistensi */
+/* 12 — bundel tempel: mount di Shadow DOM website lain */
+const embed = await vite.ssrLoadModule('/src/embed/index.tsx')
+await wait(60)
+const hostEl = document.getElementById('cikito-widget-host')
+check('Embed memasang host tersembunyi', !!hostEl && !!hostEl.shadowRoot)
+const shadow = hostEl?.shadowRoot
+check('Embed menyuntik CSS ke Shadow DOM', !!shadow?.querySelector('style')?.textContent?.includes('--color-brand-500'))
+check('Bubble tampil di dalam Shadow DOM', !!shadow?.querySelector('[aria-label^="Buka CikitoAI"]'))
+check('Bubble tempel tanpa tombol sembunyikan', !shadow?.querySelector('[aria-label="Sembunyikan widget"]'))
+check('API global CikitoAI tersedia', typeof window.CikitoAI?.open === 'function')
+await act(async () => window.CikitoAI.open())
+const embeddedPanel = shadow?.querySelector('[role="dialog"]')
+check('Panel tempel bisa dibuka lewat API', !!embeddedPanel)
+check('Widget tempel tidak bocor ke halaman', !document.body.querySelector('[role="dialog"]'))
+check(
+  'Pop-out disembunyikan bila asal backend tak diketahui',
+  !shadow?.querySelector('[aria-label="Lepas ke jendela terpisah"]'),
+)
+await act(async () => window.CikitoAI.destroy())
+check('Embed bisa dilepas kembali', !document.getElementById('cikito-widget-host'))
+check('Modul embed mengekspor API', typeof embed.default?.init === 'function')
+
+/* 13 — halaman popout (jendela mengambang) */
+const { encodePayload } = await vite.ssrLoadModule('/src/lib/utils.ts')
+const handoff = encodePayload({
+  config: JSON.parse(localStorage.getItem('cikito.config')),
+  scale: 1.1,
+  theme: 'dark',
+  transport: 'proxy',
+})
+window.history.replaceState(null, '', `/?cikito=popout#cfg=${handoff}`)
+const { default: PopoutApp } = await vite.ssrLoadModule('/src/PopoutApp.tsx')
+const popHost = document.createElement('div')
+document.body.appendChild(popHost)
+const popRoot = createRoot(popHost)
+await act(async () => popRoot.render(React.createElement(PopoutApp)))
+check('Popout ter-render', /CikitoAI/.test(popHost.textContent))
+check(
+  'Popout langsung ke chat + riwayat ikut pindah',
+  /halo cikito/.test(popHost.textContent) && /Enter kirim/.test(popHost.textContent),
+)
+check('Popout memakai skala teks titipan', popHost.firstElementChild?.style.fontSize === '15.4px')
+check('Hash konfigurasi dibersihkan dari URL', !window.location.hash)
+await act(async () => popRoot.unmount())
+popHost.remove()
+window.history.replaceState(null, '', '/')
+
+/* 14 — persistensi */
 check('Konfigurasi tersimpan', !!localStorage.getItem('cikito.config'))
 check('Riwayat chat tersimpan', (localStorage.getItem('cikito.messages') || '').includes('halo cikito'))
 

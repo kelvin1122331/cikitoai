@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kopi Rembulan — contoh situs tuan rumah CikitoAI</title>
+    <meta
+      name="description"
+      content="Halaman contoh untuk menguji widget tempel CikitoAI di website pihak ketiga."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      Halaman ini sengaja memakai CSS biasa (tanpa Tailwind, tanpa framework)
+      dengan warna dan tipografi yang sangat berbeda dari CikitoAI.
+      Tujuannya membuktikan: widget berdiri sendiri di dalam Shadow DOM dan
+      tidak saling mengganggu dengan gaya situs tuan rumah.
+    -->
+    <style>
+      :root {
+        --paper: #fdf8f1;
+        --ink: #2f241b;
+        --muted: #7a6a5c;
+        --accent: #a9552a;
+        --line: #e6dccf;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Georgia, 'Times New Roman', serif;
+        line-height: 1.75;
+      }
+      /* Gaya "berbahaya" yang biasanya merusak widget tempel — sengaja dipasang. */
+      button,
+      input {
+        font-family: inherit;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        border-radius: 0;
+      }
+      div {
+        line-height: 1.75;
+      }
+      header {
+        border-bottom: 1px solid var(--line);
+        background: #fffdf9;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 0;
+      }
+      .brand {
+        font-weight: 700;
+        font-size: 20px;
+        letter-spacing: 0.02em;
+      }
+      .brand span {
+        color: var(--accent);
+      }
+      nav a {
+        color: var(--muted);
+        margin-left: 22px;
+        text-decoration: none;
+        font-size: 15px;
+      }
+      nav a:hover {
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 44px;
+        line-height: 1.15;
+        margin: 48px 0 12px;
+      }
+      h2 {
+        font-size: 26px;
+        margin: 40px 0 8px;
+      }
+      p.lead {
+        font-size: 20px;
+        color: var(--muted);
+      }
+      .note {
+        border-left: 4px solid var(--accent);
+        background: #fff4ea;
+        padding: 14px 18px;
+        margin: 28px 0;
+        font-size: 16px;
+      }
+      code {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        background: #f1e7da;
+        padding: 2px 6px;
+        font-size: 15px;
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 64px;
+        padding: 28px 0 120px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .cta {
+        display: inline-block;
+        background: var(--accent);
+        color: #fff;
+        padding: 12px 20px;
+        text-decoration: none;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap bar">
+        <div class="brand">Kopi <span>Rembulan</span></div>
+        <nav>
+          <a href="#">Menu</a>
+          <a href="#">Cerita</a>
+          <a href="#">Kontak</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <h1>Secangkir kopi, sejuta cerita dari lereng Muria.</h1>
+      <p class="lead">
+        Halaman ini bukan bagian dari aplikasi CikitoAI. Ia sengaja dibuat sebagai “website orang
+        lain”: serif, warna kertas, tanpa Tailwind, dan dengan aturan CSS agresif untuk semua
+        <code>button</code> dan <code>div</code>.
+      </p>
+
+      <div class="note">
+        <strong>Yang perlu diperhatikan:</strong> bubble ungu di pojok kanan bawah adalah widget
+        CikitoAI yang ditempel dengan satu baris <code>&lt;script&gt;</code>. Geser, buka, ubah
+        ukurannya — tampilannya tetap utuh karena dirender di dalam Shadow DOM, dan gaya halaman ini
+        sama sekali tidak berubah.
+      </div>
+
+      <h2>Cara menempelkannya di situsmu</h2>
+      <p>
+        Cukup satu baris sebelum <code>&lt;/body&gt;</code>. Tidak ada build step, tidak ada
+        dependensi:
+      </p>
+      <pre
+        style="overflow-x: auto; background: #f1e7da; padding: 14px; font-size: 14px"
+      ><code>&lt;script src="/embed/cikito-widget.js" data-theme="auto" defer&gt;&lt;/script&gt;</code></pre>
+
+      <h2>Tetap bisa dikendalikan halaman</h2>
+      <p>
+        Widget menyediakan API global. Tombol di bawah ini memanggil
+        <code>CikitoAI.toggle()</code> milik halaman ini sendiri:
+      </p>
+      <p>
+        <a
+          class="cta"
+          href="#"
+          onclick="event.preventDefault(); window.CikitoAI && window.CikitoAI.toggle()"
+          >Buka / tutup asisten</a
+        >
+      </p>
+
+      <h2>Lalu apa?</h2>
+      <p>
+        Buka panelnya, pilih “Mode Demo” bila belum punya API key, lalu tekan Jalankan. Untuk
+        jawaban sungguhan, masukkan API key penyedia mana pun — OpenAI, Claude, Gemini, Groq,
+        OpenRouter, DeepSeek, Mistral, xAI, Together, Ollama, LM Studio, atau endpoint kustom.
+      </p>
+      <p><a href="/">← Kembali ke situs CikitoAI</a></p>
+    </main>
+
+    <footer class="wrap">© 2025 Kopi Rembulan — halaman contoh untuk pengujian widget tempel.</footer>
+
+    <!-- ↓↓↓ inilah satu-satunya baris yang berhubungan dengan CikitoAI ↓↓↓ -->
+    <script src="/embed/cikito-widget.js" data-transport="auto" data-theme="auto" defer></script>
+  </body>
+</html>

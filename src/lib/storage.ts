@@ -1,8 +1,10 @@
-const NS = 'cikito.'
+import { getRuntime } from './runtime'
+
+const ns = () => getRuntime().storagePrefix
 
 export function loadJSON<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(NS + key)
+    const raw = localStorage.getItem(ns() + key)
     if (!raw) return fallback
     return { ...(fallback as object), ...(JSON.parse(raw) as object) } as T
   } catch {
@@ -12,7 +14,7 @@ export function loadJSON<T>(key: string, fallback: T): T {
 
 export function loadRaw<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(NS + key)
+    const raw = localStorage.getItem(ns() + key)
     return raw ? (JSON.parse(raw) as T) : fallback
   } catch {
     return fallback
@@ -21,7 +23,7 @@ export function loadRaw<T>(key: string, fallback: T): T {
 
 export function saveJSON(key: string, value: unknown): void {
   try {
-    localStorage.setItem(NS + key, JSON.stringify(value))
+    localStorage.setItem(ns() + key, JSON.stringify(value))
   } catch {
     /* storage penuh / mode privat — abaikan */
   }
@@ -29,7 +31,7 @@ export function saveJSON(key: string, value: unknown): void {
 
 export function removeKey(key: string): void {
   try {
-    localStorage.removeItem(NS + key)
+    localStorage.removeItem(ns() + key)
   } catch {
     /* abaikan */
   }

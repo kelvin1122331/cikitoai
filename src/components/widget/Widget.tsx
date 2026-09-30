@@ -3,7 +3,8 @@ import { Settings2, SquarePen } from 'lucide-react'
 import type { AIConfig, PanelView, Point, WidgetStage } from '../../types'
 import { PROVIDER_MAP, defaultConfig, isConfigReady } from '../../lib/providers'
 import { KEYS, loadJSON, loadRaw, saveJSON } from '../../lib/storage'
-import { clamp } from '../../lib/utils'
+import { getRuntime, popoutUrl } from '../../lib/runtime'
+import { clamp, encodePayload } from '../../lib/utils'
 import { useChat } from '../../hooks/useChat'
 import { useMediaQuery, useViewport } from '../../hooks/useMediaQuery'
 import { IconButton } from '../ui'
@@ -15,12 +16,19 @@ import { SetupView } from './SetupView'
 const BUBBLE_SIZE = 60
 const GAP = 14
 
+/** API Document Picture-in-Picture (Chrome/Edge 116+), belum ada di lib.dom. */
+interface DocumentPiP {
+  requestWindow: (opts?: { width?: number; height?: number }) => Promise<Window>
+}
+
 interface Props {
   stage: WidgetStage
   onStageChange: (stage: WidgetStage) => void
+  /** Widget ditempel di website lain: tidak ada halaman induk untuk memanggilnya kembali. */
+  embedded?: boolean
 }
 
-export function Widget({ stage, onStageChange }: Props) {
+export function Widget({ stage, onStageChange, embedded = false }: Props) {
   const viewport = useViewport()
   const isMobile = useMediaQuery('(max-width: 767px)')
 
@@ -99,6 +107,56 @@ export function Widget({ stage, onStageChange }: Props) {
   const minimize = useCallback(() => onStageChange('bubble'), [onStageChange])
   const close = useCallback(() => onStageChange('hidden'), [onStageChange])
 
+  /**
+   * Lepas panel menjadi jendela mengambang sungguhan — tetap tampil di atas
+   * aplikasi lain (Document Picture-in-Picture), atau jendela popup biasa.
+   * Konfigurasi dikirim lewat hash URL, jadi tidak pernah sampai ke server.
+   */
+  const popOut = useCallback(async () => {
+    const rt = getRuntime()
+    const url = `${popoutUrl()}#cfg=${encodePayload({
+      config,
+      scale,
+      theme: rt.theme,
+      // Ekstensi memakai jembatan service worker yang tidak ada di halaman biasa.
+      transport: rt.transport === 'extension' ? 'direct' : rt.transport,
+      storagePrefix: rt.storagePrefix,
+    })}`
+    const w = Math.round(clamp(geometry.w, 360, 720))
+    const h = Math.round(clamp(geometry.h, 420, 900))
+
+    const dpip = (window as unknown as { documentPictureInPicture?: DocumentPiP })
+      .documentPictureInPicture
+
+    if (dpip?.requestWindow) {
+      try {
+        const pip = await dpip.requestWindow({ width: w, height: h })
+        pip.document.title = 'CikitoAI'
+        pip.document.body.style.cssText = 'margin:0;background:#0b0b12;overflow:hidden'
+        const frame = pip.document.createElement('iframe')
+        frame.src = url
+        frame.allow = 'clipboard-write'
+        frame.setAttribute('title', 'CikitoAI')
+        frame.style.cssText = 'display:block;border:0;width:100%;height:100vh'
+        pip.document.body.appendChild(frame)
+        minimize()
+        return
+      } catch {
+        /* pengguna membatalkan atau browser menolak — pakai jendela biasa */
+      }
+    }
+
+    const popup = window.open(
+      url,
+      'cikitoai-popout',
+      `popup=yes,width=${w},height=${h},left=${Math.max(0, screen.availWidth - w - 40)},top=90`,
+    )
+    if (popup) {
+      popup.focus()
+      minimize()
+    }
+  }, [config, scale, geometry.w, geometry.h, minimize])
+
   const handleRun = useCallback(() => {
     setLaunched(true)
     setView('chat')
@@ -163,7 +221,7 @@ export function Widget({ stage, onStageChange }: Props) {
           anchoredRef.current = true
         }}
         onOpen={openPanel}
-        onDismiss={close}
+        onDismiss={embedded ? undefined : close}
       />
     )
   }
@@ -178,6 +236,13 @@ export function Widget({ stage, onStageChange }: Props) {
           : `${preset?.name ?? 'Kustom'} · ${config.model}`
 
   const compact = isMobile ? viewport.w < 400 : !maximized && geometry.w < 390
+
+  /**
+   * Pop-out butuh halaman CikitoAI yang bisa dibuka di jendela lain. Saat
+   * ditempel di situs lain, itu hanya mungkin bila asal backend diketahui.
+   */
+  const runtime = getRuntime()
+  const canPopOut = !runtime.popout && (!runtime.embedded || !!runtime.apiBase)
 
   return (
     <Panel
@@ -226,7 +291,9 @@ export function Widget({ stage, onStageChange }: Props) {
         ) : null
       }
       onMinimize={minimize}
-      onClose={close}
+      onClose={embedded ? minimize : close}
+      closeLabel={embedded ? 'Tutup obrolan' : 'Tutup widget'}
+      onPopOut={canPopOut ? popOut : undefined}
       animate={animateGeo}
     >
       {view === 'setup' ? (

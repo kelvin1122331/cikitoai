@@ -56,3 +56,30 @@ export function setGlobalDragging(active: boolean, cursor?: string) {
   el.classList.toggle('dragging', active)
   el.style.cursor = active && cursor ? cursor : ''
 }
+
+/** Ukuran font dasar widget dalam px, dibulatkan agar style inline tetap rapi. */
+export function fontPx(scale: number): string {
+  return `${Math.round(14 * scale * 100) / 100}px`
+}
+
+/* ------------------------------------------- pengiriman konfigurasi antar-jendela */
+
+/** Encode objek → base64url, untuk dikirim lewat hash URL (tidak dikirim ke server). */
+export function encodePayload(value: unknown): string {
+  const json = JSON.stringify(value)
+  const bytes = new TextEncoder().encode(json)
+  let binary = ''
+  bytes.forEach((b) => (binary += String.fromCharCode(b)))
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+export function decodePayload<T>(encoded: string): T | null {
+  try {
+    const b64 = encoded.replace(/-/g, '+').replace(/_/g, '/')
+    const binary = atob(b64 + '==='.slice((b64.length + 3) % 4))
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
+    return JSON.parse(new TextDecoder().decode(bytes)) as T
+  } catch {
+    return null
+  }
+}

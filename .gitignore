@@ -10,3 +10,11 @@ dist-ssr
 npm-debug.log*
 .vite
 coverage
+
+# Bundel embed hasil build (dibuat ulang lewat `npm run build:embed`)
+public/embed
+
+# Berkas ekstensi hasil build (dibuat ulang lewat `npm run build:extension`)
+extension/widget.js
+extension/ai-core.mjs
+extension/icons
