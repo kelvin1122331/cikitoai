@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>CikitoAI — Widget AI Mengambang untuk Website Apa Pun</title>
+    <meta
+      name="description"
+      content="Tempel satu widget AI mengambang di website mana pun. Bisa digeser, diubah ukurannya, dibuka-tutup, dan terhubung ke model AI apa pun: OpenAI, Claude, Gemini, Groq, OpenRouter, Ollama, atau endpoint kustom."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Terapkan tema sebelum paint pertama agar tidak ada kedipan (FOUC).
+      (function () {
+        try {
+          var t = localStorage.getItem('cikito.theme') || 'dark';
+          document.documentElement.classList.toggle('dark', t !== 'light');
+          document.documentElement.style.colorScheme = t !== 'light' ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
