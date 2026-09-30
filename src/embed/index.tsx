@@ -31,7 +31,7 @@ export interface EmbedOptions {
   open?: boolean
   /** Aktifkan pintasan Ctrl/Cmd + K (mati secara bawaan). */
   hotkey?: boolean
-  /** Sisipkan font Plus Jakarta Sans ke halaman tuan rumah. */
+  /** Sisipkan font Inter ke halaman tuan rumah. */
   font?: boolean
   zIndex?: number
   storagePrefix?: string
@@ -47,7 +47,7 @@ export interface EmbedOptions {
 }
 
 const FONT_URL =
-  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap'
+  'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&family=JetBrains+Mono:wght@400;500&display=swap'
 
 /* document.currentScript hanya valid saat modul dievaluasi. */
 const selfScript = (document.currentScript as HTMLScriptElement | null) ?? null

@@ -56,12 +56,13 @@ export function png(size, pixel) {
 
 /* ---------------------------------------------------------------- gambar */
 
-const BRAND = [124, 77, 255]
-const CYAN = [34, 211, 238]
+const INK = [9, 9, 11] // zinc-950
+const INK_SOFT = [24, 24, 27] // zinc-900
+const ACCENT = [16, 185, 129] // emerald-500
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t))
 
 /**
- * Ikon CikitoAI: kotak membulat bergradien + gelembung chat putih.
+ * Ikon CikitoAI: kotak membulat hitam pekat + titik aksen emerald.
  *
  * @param {object} [opts]
  * @param {boolean} [opts.maskable] Full-bleed (tanpa sudut membulat) dan
@@ -82,7 +83,8 @@ export function cikitoIcon({ maskable = false } = {}) {
       if (!alpha) return [0, 0, 0, 0]
     }
 
-    const [br, bg, bb] = mix(BRAND, CYAN, (x / s) * 0.45 + (y / s) * 0.55)
+    // Latar: nyaris hitam dengan kilau halus dari kiri-atas ke kanan-bawah
+    const [br, bg, bb] = mix(INK_SOFT, INK, (x / s) * 0.45 + (y / s) * 0.55)
 
     const scale = maskable ? 0.72 : 1
     const bx = s * 0.5
@@ -90,7 +92,19 @@ export function cikitoIcon({ maskable = false } = {}) {
     const rad = s * 0.26 * scale
     const inBubble = Math.hypot(px - bx, py - by) <= rad
     const inTail = Math.hypot(px - (bx - rad * 0.72), py - (by + rad * 0.86)) <= rad * 0.34
-    if (inBubble || inTail) return [255, 255, 255, alpha]
+    if (inBubble || inTail) {
+      // Tiga titik "sedang mengetik"; yang terakhir memakai warna aksen
+      const dr = rad * 0.155
+      const dots = [
+        [bx - rad * 0.46, INK],
+        [bx, INK],
+        [bx + rad * 0.46, ACCENT],
+      ]
+      for (const [dx, color] of dots) {
+        if (Math.hypot(px - dx, py - by) <= dr) return [...color, alpha]
+      }
+      return [255, 255, 255, alpha]
+    }
 
     return [br, bg, bb, alpha]
   }

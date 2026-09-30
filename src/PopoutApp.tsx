@@ -86,8 +86,8 @@ export default function PopoutApp() {
       className="flex h-[100dvh] w-full flex-col overflow-hidden bg-white text-ink-900 dark:bg-ink-950 dark:text-white"
       style={{ fontSize: fontPx(scale) }}
     >
-      <header className="relative flex shrink-0 items-center gap-2 border-b border-black/[0.07] bg-gradient-to-r from-brand-500/[0.07] via-transparent to-cyan-500/[0.07] px-2.5 py-2 dark:border-white/[0.08]">
-        <div className="grid size-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-500 via-indigo-500 to-cyan-400 text-white shadow-sm">
+      <header className="relative flex shrink-0 items-center gap-2 border-b border-ink-200 px-2.5 py-2 dark:border-ink-800">
+        <div className="grid size-8 shrink-0 place-items-center rounded-[10px] bg-ink-950 text-white shadow-sm dark:bg-white dark:text-ink-950">
           <Sparkles className="size-4" />
         </div>
         <div className="min-w-0 flex-1 select-none">

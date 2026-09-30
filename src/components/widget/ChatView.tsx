@@ -96,8 +96,8 @@ export function ChatView({ config, chat, onOpenSettings, compact }: Props) {
         {empty ? (
           <div className="flex h-full flex-col items-center justify-center px-2 py-6 text-center">
             <div className="relative mb-3">
-              <div className="absolute inset-0 animate-ring rounded-2xl bg-brand-500/40" />
-              <div className="relative grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-brand-500 via-indigo-500 to-cyan-400 text-white shadow-lg">
+              <div className="absolute inset-0 animate-ring rounded-2xl bg-brand-500/30" />
+              <div className="relative grid size-12 place-items-center rounded-2xl bg-ink-950 text-white shadow-lg dark:bg-white dark:text-ink-950">
                 <Sparkles className="size-6" />
               </div>
             </div>
@@ -106,7 +106,7 @@ export function ChatView({ config, chat, onOpenSettings, compact }: Props) {
             </h3>
             <p className="mt-1 max-w-[30ch] text-[0.78em] leading-snug text-ink-500 dark:text-ink-400">
               Terhubung ke{' '}
-              <span className="font-semibold text-brand-600 dark:text-brand-300">
+              <span className="font-semibold text-brand-700 dark:text-brand-400">
                 {preset?.name ?? 'penyedia kustom'}
               </span>
               {config.kind !== 'demo' && (
@@ -126,7 +126,7 @@ export function ChatView({ config, chat, onOpenSettings, compact }: Props) {
                     send(s.text)
                     setAtBottom(true)
                   }}
-                  className="group flex items-start gap-2 rounded-xl border border-black/[0.07] bg-white p-2.5 text-left text-[0.74em] leading-snug text-ink-600 shadow-sm transition-all hover:-translate-y-px hover:border-brand-300 hover:text-ink-900 hover:shadow-md dark:border-white/10 dark:bg-white/[0.04] dark:text-ink-300 dark:hover:text-white"
+                  className="group flex items-start gap-2 rounded-lg border border-ink-200 bg-white p-2.5 text-left text-[0.74em] leading-snug text-ink-600 shadow-soft transition-all duration-200 hover:-translate-y-px hover:border-ink-300 hover:text-ink-950 hover:shadow-lift dark:border-ink-800 dark:bg-ink-900/40 dark:text-ink-300 dark:hover:border-ink-700 dark:hover:text-white"
                 >
                   <span className="text-[1.1em]">{s.icon}</span>
                   <span className="min-w-0 flex-1">{s.text}</span>
@@ -161,25 +161,25 @@ export function ChatView({ config, chat, onOpenSettings, compact }: Props) {
           type="button"
           onClick={() => scrollToBottom()}
           aria-label="Gulir ke pesan terbaru"
-          className="absolute bottom-24 left-1/2 z-10 grid size-8 -translate-x-1/2 place-items-center rounded-full border border-black/10 bg-white text-ink-600 shadow-lg transition hover:scale-110 dark:border-white/15 dark:bg-ink-800 dark:text-ink-200"
+          className="absolute bottom-24 left-1/2 z-10 grid size-8 -translate-x-1/2 place-items-center rounded-full border border-ink-200 bg-white text-ink-600 shadow-lg transition hover:scale-110 dark:border-ink-800 dark:bg-ink-800 dark:text-ink-200"
         >
           <ArrowDown className="size-4" />
         </button>
       )}
 
       {/* Komposer */}
-      <div className="shrink-0 border-t border-black/[0.07] bg-white/80 p-2.5 backdrop-blur-md dark:border-white/10 dark:bg-ink-900/60">
+      <div className="shrink-0 border-t border-ink-200 bg-white/80 p-2.5 backdrop-blur-md dark:border-ink-800 dark:bg-ink-900/60">
         <div
           className={cn(
-            'flex items-end gap-1.5 rounded-2xl border bg-white px-2 py-1.5 transition-all dark:bg-white/[0.04]',
-            'border-black/10 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-400/20 dark:border-white/10',
+            'flex items-end gap-1.5 rounded-2xl border bg-white px-2 py-1.5 transition-all dark:bg-ink-900/60',
+            'border-ink-200 focus-within:border-brand-500/70 focus-within:ring-2 focus-within:ring-brand-500/20 dark:border-ink-800',
           )}
         >
           <button
             type="button"
             onClick={onOpenSettings}
             aria-label="Ubah pengaturan API"
-            className="mb-0.5 grid size-8 shrink-0 place-items-center rounded-xl text-ink-400 transition hover:bg-black/[0.05] hover:text-brand-600 dark:hover:bg-white/10 dark:hover:text-brand-300"
+            className="mb-0.5 grid size-8 shrink-0 place-items-center rounded-lg text-ink-400 transition hover:bg-ink-100 hover:text-ink-950 dark:hover:bg-ink-800 dark:hover:text-white"
           >
             <Settings2 className="size-4" />
           </button>
@@ -218,10 +218,10 @@ export function ChatView({ config, chat, onOpenSettings, compact }: Props) {
               disabled={!draft.trim()}
               aria-label="Kirim pesan"
               className={cn(
-                'mb-0.5 grid size-8 shrink-0 place-items-center rounded-xl text-white shadow transition-all active:scale-95',
+                'mb-0.5 grid size-8 shrink-0 place-items-center rounded-lg shadow-soft transition-all duration-200 active:scale-95',
                 draft.trim()
-                  ? 'bg-gradient-to-br from-brand-600 to-indigo-500 hover:shadow-lg'
-                  : 'cursor-not-allowed bg-ink-300 dark:bg-white/10',
+                  ? 'bg-ink-950 text-white hover:bg-ink-800 dark:bg-white dark:text-ink-950 dark:hover:bg-ink-200'
+                  : 'cursor-not-allowed bg-ink-200 text-ink-400 dark:bg-ink-800 dark:text-ink-600',
               )}
             >
               <Send className="size-4" />
@@ -231,10 +231,10 @@ export function ChatView({ config, chat, onOpenSettings, compact }: Props) {
 
         <div className="mt-1.5 flex items-center justify-between gap-2 px-1 text-[0.62em] text-ink-400">
           <span className="truncate">
-            <kbd className="rounded border border-black/10 px-1 dark:border-white/15">Enter</kbd>{' '}
+            <kbd className="rounded border border-ink-200 px-1 dark:border-ink-700">Enter</kbd>{' '}
             kirim ·{' '}
-            <kbd className="rounded border border-black/10 px-1 dark:border-white/15">Shift</kbd>+
-            <kbd className="rounded border border-black/10 px-1 dark:border-white/15">Enter</kbd>{' '}
+            <kbd className="rounded border border-ink-200 px-1 dark:border-ink-800">Shift</kbd>+
+            <kbd className="rounded border border-ink-200 px-1 dark:border-ink-700">Enter</kbd>{' '}
             baris baru
           </span>
           <span className="shrink-0 truncate font-mono">

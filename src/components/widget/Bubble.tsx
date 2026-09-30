@@ -64,7 +64,7 @@ export function Bubble({
     >
       {/* Cincin denyut penarik perhatian */}
       {attention && !dragging && (
-        <span className="pointer-events-none absolute inset-0 animate-ring rounded-full bg-brand-500/50" />
+        <span className="pointer-events-none absolute inset-0 animate-ring rounded-full bg-brand-500/40" />
       )}
 
       <button
@@ -74,13 +74,12 @@ export function Bubble({
         aria-label="Buka CikitoAI — klik untuk membuka, tahan lalu geser untuk memindahkan"
         className={cn(
           'relative flex size-full cursor-grab items-center justify-center rounded-full',
-          'bg-gradient-to-br from-brand-500 via-indigo-500 to-cyan-400 text-white',
-          'shadow-[0_10px_30px_-6px_rgba(109,43,245,0.65)] ring-1 ring-white/25',
+          'bg-ink-950 text-white dark:bg-white dark:text-ink-950',
+          'shadow-glow ring-1 ring-black/5 dark:ring-white/10',
           'transition-transform duration-200 will-change-transform',
           dragging ? 'scale-110 cursor-grabbing shadow-2xl' : 'hover:scale-105 active:scale-95',
         )}
       >
-        <span className="absolute inset-0 rounded-full bg-gradient-to-t from-black/15 to-white/20 opacity-70" />
         <MessageCircleMore
           className="relative size-1/2 drop-shadow-sm"
           strokeWidth={2}
@@ -89,7 +88,7 @@ export function Bubble({
         <span
           className={cn(
             'absolute -top-0.5 -right-0.5 grid size-4 place-items-center rounded-full',
-            'bg-white/90 text-brand-600 opacity-0 shadow transition-opacity duration-200',
+            'bg-brand-500 text-white opacity-0 shadow transition-opacity duration-200',
             dragging && 'opacity-100',
           )}
         >
@@ -104,9 +103,9 @@ export function Bubble({
           onClick={onDismiss}
           aria-label="Sembunyikan widget"
           className={cn(
-            'absolute -top-1 -left-1 grid size-6 place-items-center rounded-full border border-black/5',
+            'absolute -top-1 -left-1 grid size-6 place-items-center rounded-full border border-ink-200',
             'bg-white text-ink-500 shadow-md transition-all duration-200 hover:scale-110 hover:text-red-500',
-            'dark:border-white/10 dark:bg-ink-800 dark:text-ink-300',
+            'dark:border-ink-700 dark:bg-ink-800 dark:text-ink-300',
             'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
             '[@media(hover:none)]:opacity-100',
             dragging && 'pointer-events-none opacity-0',

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { CodeXml, Menu, Moon, Play, Sparkles, Sun, X } from 'lucide-react'
+import { Menu, Moon, Sun, X } from 'lucide-react'
 import { Link, usePathname } from '../lib/router'
 import { cn } from '../lib/utils'
 import { NAV_ROUTES } from './routes'
@@ -12,211 +12,230 @@ interface Props {
   children: ReactNode
 }
 
-/**
- * Kerangka situs: latar, bilah navigasi, dan kaki halaman.
- * Setiap menu di sini membuka **halaman tersendiri**, bukan sekadar menggulir.
- */
 export function Shell({ onLaunch, active, theme, onToggleTheme, children }: Props) {
   const pathname = usePathname()
+  const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => setOpen(false), [pathname])
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
+    const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  /* Menu seluler selalu tertutup setelah pindah halaman. */
-  useEffect(() => setMenuOpen(false), [pathname])
-
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
-      {/* ---------------------------------------------------------- latar */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-white dark:bg-ink-950" />
-        <div className="grid-pattern absolute inset-0 opacity-60 mask-fade-b" />
-        <div className="absolute -top-40 -left-32 size-[34rem] animate-aurora rounded-full bg-brand-500/25 blur-[120px] dark:bg-brand-600/25" />
-        <div
-          className="absolute -top-20 right-0 size-[30rem] animate-aurora rounded-full bg-cyan-400/20 blur-[120px] dark:bg-cyan-500/15"
-          style={{ animationDelay: '-6s' }}
-        />
-        <div
-          className="absolute top-[45%] left-1/3 size-[28rem] animate-aurora rounded-full bg-fuchsia-400/15 blur-[130px] dark:bg-fuchsia-600/15"
-          style={{ animationDelay: '-11s' }}
-        />
-      </div>
+    <div className="relative min-h-screen">
+      <Backdrop />
 
-      {/* --------------------------------------------------------- navbar */}
+      <a
+        href="#konten"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-ink-950 focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-white dark:focus:bg-white dark:focus:text-ink-950"
+      >
+        Lompat ke konten
+      </a>
+
+      {/* ---------------------------------------------------------- navbar */}
       <header
         className={cn(
-          'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-          scrolled ? 'py-2' : 'py-3 sm:py-4',
+          'fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300',
+          scrolled || open
+            ? 'border-ink-200 bg-white/80 backdrop-blur-xl dark:border-ink-800 dark:bg-ink-950/80'
+            : 'border-transparent bg-transparent',
         )}
       >
-        <div className="mx-auto max-w-6xl px-3 sm:px-5">
-          <nav
-            aria-label="Navigasi utama"
-            className={cn(
-              'flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-300 sm:px-4',
-              scrolled
-                ? 'glass shadow-lg shadow-black/[0.04]'
-                : 'border border-transparent bg-transparent',
-            )}
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <Link
+            to="/"
+            className="group flex items-center gap-2.5"
+            aria-label="CikitoAI, ke beranda"
           >
-            <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="CikitoAI, beranda">
-              <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-brand-500 via-indigo-500 to-cyan-400 text-white shadow-md">
-                <Sparkles className="size-[18px]" />
-              </span>
-              <span className="text-base font-extrabold tracking-tight">
-                Cikito<span className="text-gradient">AI</span>
-              </span>
-            </Link>
+            <Logo />
+            <span className="text-[0.9375rem] font-semibold tracking-tight text-ink-950 dark:text-white">
+              Cikito<span className="text-ink-400 dark:text-ink-500">AI</span>
+            </span>
+          </Link>
 
-            <div className="mx-auto hidden items-center gap-1 md:flex">
-              {NAV_ROUTES.map((r) => {
-                const current = pathname === r.path
-                return (
-                  <Link
-                    key={r.path}
-                    to={r.path}
-                    aria-label={`${r.label} — buka halaman`}
-                    className={cn(
-                      'rounded-lg px-3 py-1.5 text-sm font-medium transition',
-                      current
-                        ? 'bg-brand-500/12 font-bold text-brand-700 dark:bg-brand-400/15 dark:text-brand-200'
-                        : 'text-ink-600 hover:bg-black/[0.05] hover:text-ink-900 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white',
-                    )}
-                  >
-                    {r.label}
-                  </Link>
-                )
-              })}
-            </div>
-
-            <div className="ml-auto flex items-center gap-1.5 md:ml-0">
-              <button
-                type="button"
-                onClick={onToggleTheme}
-                aria-label="Ganti tema terang / gelap"
-                className="grid size-9 place-items-center rounded-xl text-ink-500 transition hover:bg-black/[0.05] hover:text-ink-900 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white"
-              >
-                {theme === 'dark' ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
-              </button>
-
-              <button
-                type="button"
-                onClick={onLaunch}
-                className={cn(
-                  'group hidden items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold text-white sm:flex',
-                  'bg-gradient-to-r from-brand-600 to-indigo-500 shadow-[0_8px_20px_-8px_rgba(109,43,245,0.8)]',
-                  'transition-all hover:-translate-y-px hover:shadow-[0_12px_26px_-8px_rgba(109,43,245,0.9)] active:translate-y-0',
-                )}
-              >
-                <Play className="size-3.5 fill-current" />
-                {active ? 'Buka widget' : 'Jalankan'}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setMenuOpen((v) => !v)}
-                aria-label="Buka menu"
-                aria-expanded={menuOpen}
-                className="grid size-9 place-items-center rounded-xl text-ink-600 transition hover:bg-black/[0.05] md:hidden dark:text-ink-300 dark:hover:bg-white/10"
-              >
-                {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-              </button>
-            </div>
+          <nav aria-label="Navigasi utama" className="ml-4 hidden items-center gap-0.5 lg:flex">
+            {NAV_ROUTES.map((r) => {
+              const isActive = pathname === r.path
+              return (
+                <Link
+                  key={r.path}
+                  to={r.path}
+                  className={cn(
+                    'rounded-lg px-3 py-1.5 text-sm transition-colors duration-200',
+                    isActive
+                      ? 'bg-ink-100 font-medium text-ink-950 dark:bg-ink-900 dark:text-white'
+                      : 'text-ink-600 hover:bg-ink-100/70 hover:text-ink-950 dark:text-ink-400 dark:hover:bg-ink-900/70 dark:hover:text-white',
+                  )}
+                >
+                  {r.label}
+                </Link>
+              )
+            })}
           </nav>
 
-          {menuOpen && (
-            <div className="glass mt-2 animate-fade-in space-y-1 rounded-2xl p-2 shadow-xl md:hidden">
+          <div className="ml-auto flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-label={theme === 'dark' ? 'Mode terang' : 'Mode gelap'}
+              className="btn btn-ghost size-9 rounded-lg p-0"
+            >
+              {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </button>
+
+            <button type="button" onClick={onLaunch} className="btn btn-primary btn-sm">
+              {active ? 'Buka widget' : 'Jalankan'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-label={open ? 'Tutup menu' : 'Buka menu'}
+              className="btn btn-ghost size-9 rounded-lg p-0 lg:hidden"
+            >
+              {open ? <X className="size-4.5" /> : <Menu className="size-4.5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* menu ponsel */}
+        {open && (
+          <div className="animate-fade-in border-t border-ink-200 bg-white px-4 pt-2 pb-4 lg:hidden dark:border-ink-800 dark:bg-ink-950">
+            <nav aria-label="Navigasi ponsel" className="grid gap-0.5">
               {NAV_ROUTES.map((r) => {
                 const Icon = r.icon
-                const current = pathname === r.path
+                const isActive = pathname === r.path
                 return (
                   <Link
                     key={r.path}
                     to={r.path}
-                    onNavigate={() => setMenuOpen(false)}
                     className={cn(
-                      'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition',
-                      current
-                        ? 'bg-brand-500/12 font-bold text-brand-700 dark:bg-brand-400/15 dark:text-brand-200'
-                        : 'text-ink-700 hover:bg-black/[0.05] dark:text-ink-200 dark:hover:bg-white/10',
+                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors',
+                      isActive
+                        ? 'bg-ink-100 font-medium text-ink-950 dark:bg-ink-900 dark:text-white'
+                        : 'text-ink-600 hover:bg-ink-50 dark:text-ink-400 dark:hover:bg-ink-900/60',
                     )}
                   >
-                    <Icon className="size-4 shrink-0 opacity-70" />
+                    <Icon className={cn('size-4', isActive && 'text-brand-600 dark:text-brand-400')} />
                     {r.label}
                   </Link>
                 )
               })}
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false)
-                  onLaunch()
-                }}
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-500 px-4 py-2.5 text-sm font-bold text-white"
-              >
-                <Play className="size-4 fill-current" /> {active ? 'Buka widget' : 'Jalankan'}
-              </button>
-            </div>
-          )}
-        </div>
+            </nav>
+          </div>
+        )}
       </header>
 
-      <main>{children}</main>
+      <main id="konten" className="relative">
+        {children}
+      </main>
 
-      {/* --------------------------------------------------------- footer */}
-      <footer className="border-t border-black/[0.07] py-10 dark:border-white/[0.07]">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-cyan-400 text-white">
-                <Sparkles className="size-4" />
-              </span>
-              <span className="text-sm font-extrabold">
-                Cikito<span className="text-gradient">AI</span>
-              </span>
-            </Link>
+      <Footer onLaunch={onLaunch} active={active} />
+    </div>
+  )
+}
 
-            <nav aria-label="Navigasi kaki halaman" className="flex flex-wrap justify-center gap-x-4 gap-y-1">
+/* -------------------------------------------------------------------- */
+
+function Logo() {
+  return (
+    <span className="relative grid size-7 shrink-0 place-items-center rounded-[9px] bg-ink-950 transition-transform duration-200 group-hover:scale-105 dark:bg-white">
+      <span className="size-2 rounded-full bg-brand-400 dark:bg-brand-500" />
+    </span>
+  )
+}
+
+function Backdrop() {
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div className="grid-pattern mask-radial absolute inset-0 opacity-70" />
+      <div className="absolute -top-40 left-1/2 h-[28rem] w-[56rem] -translate-x-1/2 rounded-full bg-brand-500/[0.07] blur-[120px] dark:bg-brand-500/[0.09]" />
+    </div>
+  )
+}
+
+function Footer({ onLaunch, active }: { onLaunch: () => void; active: boolean }) {
+  return (
+    <footer className="relative mt-24 border-t border-ink-200 dark:border-ink-800">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-7 place-items-center rounded-[9px] bg-ink-950 dark:bg-white">
+                <span className="size-2 rounded-full bg-brand-400 dark:bg-brand-500" />
+              </span>
+              <span className="text-[0.9375rem] font-semibold tracking-tight text-ink-950 dark:text-white">
+                Cikito<span className="text-ink-400 dark:text-ink-500">AI</span>
+              </span>
+            </div>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-500 dark:text-ink-400">
+              Widget AI mengambang yang bisa digeser, diubah ukurannya, dan ditempel di website mana
+              pun. API key tetap di perangkatmu.
+            </p>
+            <button
+              type="button"
+              onClick={onLaunch}
+              className="btn btn-secondary btn-sm mt-5"
+            >
+              {active ? 'Buka widget' : 'Jalankan'}
+            </button>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold tracking-wide text-ink-950 uppercase dark:text-white">
+              Halaman
+            </h3>
+            <nav aria-label="Navigasi footer" className="mt-4 grid gap-2.5">
               {NAV_ROUTES.map((r) => (
                 <Link
                   key={r.path}
                   to={r.path}
-                  className="text-xs font-semibold text-ink-500 transition hover:text-ink-900 dark:text-ink-400 dark:hover:text-white"
+                  className="text-sm text-ink-500 transition-colors hover:text-ink-950 dark:text-ink-400 dark:hover:text-white"
                 >
                   {r.label}
                 </Link>
               ))}
             </nav>
-
-            <a
-              href="https://github.com/kelvin1122331/cikitoai"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs font-semibold text-ink-500 transition hover:text-ink-900 dark:text-ink-400 dark:hover:text-white"
-            >
-              <CodeXml className="size-4" /> Kode sumber
-            </a>
           </div>
 
-          <p className="mt-6 text-center text-xs text-ink-500 dark:text-ink-400">
-            Dibuat dengan React, TypeScript & Tailwind · Tekan{' '}
-            <kbd className="rounded border border-black/10 px-1 py-0.5 font-mono text-[10px] dark:border-white/15">
-              Ctrl
-            </kbd>
-            +
-            <kbd className="rounded border border-black/10 px-1 py-0.5 font-mono text-[10px] dark:border-white/15">
-              K
-            </kbd>{' '}
-            untuk buka-tutup widget
+          <div>
+            <h3 className="text-xs font-semibold tracking-wide text-ink-950 uppercase dark:text-white">
+              Pintasan
+            </h3>
+            <ul className="mt-4 space-y-2.5 text-sm text-ink-500 dark:text-ink-400">
+              <li className="flex items-center gap-2">
+                <kbd className="kbd">Ctrl</kbd>
+                <span className="text-ink-400">+</span>
+                <kbd className="kbd">K</kbd>
+                <span className="ml-1">buka–tutup widget</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <kbd className="kbd">Esc</kbd>
+                <span className="ml-1">kecilkan ke bubble</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <kbd className="kbd">Enter</kbd>
+                <span className="ml-1">kirim pesan</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-ink-200 pt-6 sm:flex-row dark:border-ink-800">
+          <p className="text-xs text-ink-500 dark:text-ink-400">
+            © {new Date().getFullYear()} CikitoAI · Dibuat dengan React, Vite, dan Tailwind CSS.
+          </p>
+          <p className="text-xs text-ink-500 dark:text-ink-400">
+            API key disimpan lokal di peramban — tidak pernah ikut tersimpan di server.
           </p>
         </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
   )
 }

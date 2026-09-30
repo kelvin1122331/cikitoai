@@ -135,7 +135,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
         <section className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <h3 className="flex items-center gap-1.5 text-[0.82em] font-bold text-ink-800 dark:text-ink-100">
-              <PlugZap className="size-[1.1em] text-brand-500" />
+              <PlugZap className="size-[1.1em] text-brand-600 dark:text-brand-400" />
               Pilih penyedia AI
             </h3>
             <span className="text-[0.7em] text-ink-400">{PROVIDERS.length} opsi</span>
@@ -153,14 +153,16 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                   className={cn(
                     'group relative flex items-center gap-2 rounded-xl border p-2 text-left transition-all duration-150',
                     selected
-                      ? 'border-brand-400 bg-brand-500/10 shadow-[0_0_0_3px_rgba(124,77,255,0.12)]'
-                      : 'border-black/10 hover:border-brand-300 hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/5',
+                      ? 'border-brand-500/60 bg-brand-500/[0.08] shadow-[0_0_0_3px_rgb(16_185_129/0.10)]'
+                      : 'border-ink-200 hover:border-ink-300 hover:bg-ink-50 dark:border-ink-800 dark:hover:border-ink-700 dark:hover:bg-ink-900/60',
                   )}
                 >
                   <span
                     className={cn(
-                      'grid size-6 shrink-0 place-items-center rounded-lg bg-gradient-to-br text-[0.6em] font-bold text-white shadow-sm',
-                      p.accent,
+                      'grid size-6 shrink-0 place-items-center rounded-md border font-mono text-[0.58em] font-medium transition-colors',
+                      selected
+                        ? 'border-brand-500/40 bg-brand-500/15 text-brand-700 dark:text-brand-300'
+                        : 'border-ink-200 bg-ink-50 text-ink-500 dark:border-ink-800 dark:bg-ink-900 dark:text-ink-400',
                     )}
                   >
                     {p.short}
@@ -170,15 +172,17 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                       {p.name}
                     </span>
                   </span>
-                  {selected && <Check className="size-3.5 shrink-0 text-brand-500" strokeWidth={3} />}
+                  {selected && (
+                    <Check className="size-3.5 shrink-0 text-brand-600 dark:text-brand-400" strokeWidth={3} />
+                  )}
                 </button>
               )
             })}
           </div>
 
           {preset.note && (
-            <p className="flex gap-1.5 rounded-lg bg-brand-500/[0.07] px-2.5 py-2 text-[0.72em] leading-snug text-ink-600 dark:text-ink-300">
-              <Info className="mt-px size-3.5 shrink-0 text-brand-500" />
+            <p className="flex gap-1.5 rounded-lg border border-ink-200 bg-ink-50 px-2.5 py-2 text-[0.72em] leading-snug text-ink-600 dark:border-ink-800 dark:bg-ink-900/50 dark:text-ink-400">
+              <Info className="mt-px size-3.5 shrink-0 text-brand-600 dark:text-brand-400" />
               {preset.note}
             </p>
           )}
@@ -220,7 +224,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                   <button
                     type="button"
                     onClick={() => set({ baseUrl: preset.baseUrl })}
-                    className="flex items-center gap-1 text-[0.7em] font-medium text-brand-600 hover:underline dark:text-brand-300"
+                    className="flex items-center gap-1 text-[0.7em] font-medium text-brand-700 hover:underline dark:text-brand-400"
                   >
                     <RotateCcw className="size-3" /> Kembalikan
                   </button>
@@ -254,7 +258,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                     href={preset.keyUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-[0.7em] font-medium text-brand-600 hover:underline dark:text-brand-300"
+                    className="flex items-center gap-1 text-[0.7em] font-medium text-brand-700 hover:underline dark:text-brand-400"
                   >
                     Ambil key <ExternalLink className="size-3" />
                   </a>
@@ -293,7 +297,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                   type="button"
                   onClick={loadModels}
                   disabled={loadingModels}
-                  className="flex items-center gap-1 text-[0.7em] font-medium text-brand-600 hover:underline disabled:opacity-50 dark:text-brand-300"
+                  className="flex items-center gap-1 text-[0.7em] font-medium text-brand-700 hover:underline disabled:opacity-50 dark:text-brand-400"
                 >
                   {loadingModels ? <Spinner className="size-3" /> : <ListRestart className="size-3" />}
                   Muat daftar model
@@ -314,7 +318,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                 />
 
                 {modelsOpen && filteredModels.length > 0 && (
-                  <div className="thin-scrollbar absolute z-30 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-black/10 bg-white p-1 shadow-xl dark:border-white/10 dark:bg-ink-900">
+                  <div className="thin-scrollbar absolute z-30 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-ink-200 bg-white p-1 shadow-xl dark:border-ink-800 dark:bg-ink-900">
                     {filteredModels.map((m) => (
                       <button
                         key={m.id}
@@ -323,7 +327,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                           set({ model: m.id })
                           setModelsOpen(false)
                         }}
-                        className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left font-mono text-[0.72em] hover:bg-brand-500/10"
+                        className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left font-mono text-[0.72em] hover:bg-ink-100 dark:hover:bg-ink-800"
                       >
                         <span className="truncate">{m.id}</span>
                         {m.label && (
@@ -347,8 +351,8 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                       className={cn(
                         'rounded-md border px-1.5 py-0.5 font-mono text-[0.66em] transition',
                         config.model === m
-                          ? 'border-brand-400 bg-brand-500/15 text-brand-700 dark:text-brand-200'
-                          : 'border-black/10 text-ink-500 hover:border-brand-300 hover:text-brand-600 dark:border-white/10 dark:text-ink-400',
+                          ? 'border-brand-500/50 bg-brand-500/12 text-brand-700 dark:text-brand-300'
+                          : 'border-ink-200 text-ink-500 hover:border-ink-300 hover:text-ink-950 dark:border-ink-800 dark:text-ink-400 dark:hover:text-white',
                       )}
                     >
                       {m}
@@ -361,22 +365,22 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
         )}
 
         {/* Pengaturan lanjutan */}
-        <section className="overflow-hidden rounded-xl border border-black/10 dark:border-white/10">
+        <section className="overflow-hidden rounded-xl border border-ink-200 dark:border-ink-800">
           <button
             type="button"
             onClick={() => setAdvanced((v) => !v)}
             aria-expanded={advanced}
-            className="flex w-full items-center justify-between gap-2 px-3 py-2 text-[0.78em] font-semibold text-ink-700 transition hover:bg-black/[0.03] dark:text-ink-200 dark:hover:bg-white/5"
+            className="flex w-full items-center justify-between gap-2 px-3 py-2 text-[0.78em] font-semibold text-ink-700 transition hover:bg-ink-100 dark:text-ink-200 dark:hover:bg-ink-800"
           >
             <span className="flex items-center gap-1.5">
-              <Sparkles className="size-[1.05em] text-brand-500" />
+              <Sparkles className="size-[1.05em] text-brand-600 dark:text-brand-400" />
               Pengaturan lanjutan
             </span>
             <ChevronDown className={cn('size-4 transition-transform', advanced && 'rotate-180')} />
           </button>
 
           {advanced && (
-            <div className="space-y-3 border-t border-black/10 p-3 dark:border-white/10">
+            <div className="space-y-3 border-t border-ink-200 p-3 dark:border-ink-800">
               <Field label="Instruksi sistem" hint="Menentukan gaya dan peran asisten.">
                 <textarea
                   value={config.system}
@@ -388,7 +392,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                   <button
                     type="button"
                     onClick={() => set({ system: DEFAULT_SYSTEM_PROMPT })}
-                    className="text-[0.7em] font-medium text-brand-600 hover:underline dark:text-brand-300"
+                    className="text-[0.7em] font-medium text-brand-700 hover:underline dark:text-brand-400"
                   >
                     Kembalikan ke bawaan
                   </button>
@@ -406,7 +410,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
                   step={0.05}
                   value={config.temperature}
                   onChange={(e) => set({ temperature: Number(e.target.value) })}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gradient-to-r from-sky-400 via-brand-500 to-rose-400 accent-brand-600"
+                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ink-200 accent-brand-600 dark:bg-ink-800"
                 />
               </Field>
 
@@ -447,13 +451,13 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
       </div>
 
       {/* Aksi */}
-      <div className="shrink-0 space-y-2 border-t border-black/[0.07] bg-white/60 p-3 backdrop-blur dark:border-white/10 dark:bg-white/[0.02]">
+      <div className="shrink-0 space-y-2 border-t border-ink-200 bg-white/60 p-3 backdrop-blur dark:border-ink-800 dark:bg-ink-900/40">
         <div className="flex gap-2">
           {onBack && (
             <button
               type="button"
               onClick={onBack}
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-black/10 px-3 py-2.5 text-[0.8em] font-semibold text-ink-600 transition hover:bg-black/[0.04] dark:border-white/10 dark:text-ink-300 dark:hover:bg-white/5"
+              className="flex items-center justify-center gap-1.5 rounded-xl border border-ink-200 px-3 py-2.5 text-[0.8em] font-semibold text-ink-600 transition hover:bg-ink-100 dark:border-ink-800 dark:text-ink-300 dark:hover:bg-ink-800"
             >
               <ArrowLeft className="size-4" />
               {!compact && 'Kembali'}
@@ -465,7 +469,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
               type="button"
               onClick={runTest}
               disabled={testing || !ready}
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-black/10 px-3 py-2.5 text-[0.8em] font-semibold text-ink-600 transition hover:bg-black/[0.04] disabled:opacity-40 dark:border-white/10 dark:text-ink-300 dark:hover:bg-white/5"
+              className="flex items-center justify-center gap-1.5 rounded-xl border border-ink-200 px-3 py-2.5 text-[0.8em] font-semibold text-ink-600 transition hover:bg-ink-100 disabled:opacity-40 dark:border-ink-800 dark:text-ink-300 dark:hover:bg-ink-800"
             >
               {testing ? <Spinner className="size-4" /> : <PlugZap className="size-4" />}
               {!compact && (testing ? 'Menguji…' : 'Tes koneksi')}
@@ -477,12 +481,11 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
             onClick={onRun}
             disabled={!ready}
             className={cn(
-              'group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-2.5',
-              'text-[0.85em] font-bold text-white transition-all duration-200',
-              'bg-gradient-to-r from-brand-600 via-indigo-500 to-cyan-500',
-              'shadow-[0_8px_20px_-6px_rgba(109,43,245,0.6)] hover:shadow-[0_10px_26px_-6px_rgba(109,43,245,0.75)]',
-              'hover:-translate-y-px active:translate-y-0 active:scale-[0.99]',
-              'disabled:pointer-events-none disabled:opacity-40',
+              'group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-lg px-4 py-2.5',
+              'text-[0.85em] font-semibold transition-all duration-200',
+              'bg-ink-950 text-white shadow-soft hover:bg-ink-800',
+              'dark:bg-white dark:text-ink-950 dark:hover:bg-ink-200',
+              'active:scale-[0.99] disabled:pointer-events-none disabled:opacity-40',
             )}
           >
             <Play className="size-4 fill-current" />
@@ -496,7 +499,7 @@ export function SetupView({ config, onChange, onRun, onBack, compact }: Props) {
             <button
               type="button"
               onClick={() => pickProvider('demo')}
-              className="font-semibold text-brand-600 hover:underline dark:text-brand-300"
+              className="font-semibold text-brand-700 hover:underline dark:text-brand-400"
             >
               Mode Demo
             </button>{' '}

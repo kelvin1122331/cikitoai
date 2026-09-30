@@ -38,7 +38,7 @@ function inline(text: string, key: string): ReactNode[] {
       out.push(
         <code
           key={k}
-          className="rounded-[0.35em] border border-black/5 bg-black/[0.06] px-[0.35em] py-[0.12em] font-mono text-[0.88em] text-brand-700 dark:border-white/10 dark:bg-white/10 dark:text-brand-200"
+          className="rounded-[0.35em] border border-ink-200 bg-ink-100 px-[0.35em] py-[0.12em] font-mono text-[0.88em] text-ink-800 dark:border-ink-800 dark:bg-ink-800/80 dark:text-ink-100"
         >
           {m[2]}
         </code>,
@@ -70,7 +70,7 @@ function inline(text: string, key: string): ReactNode[] {
             href={href}
             target="_blank"
             rel="noopener noreferrer nofollow"
-            className="font-medium text-brand-600 underline decoration-brand-400/50 underline-offset-2 transition hover:decoration-brand-500 dark:text-brand-300"
+            className="font-medium text-brand-700 underline decoration-brand-500/40 underline-offset-2 transition hover:decoration-brand-500 dark:text-brand-400"
           >
             {inline(m[8] || m[9], k)}
           </a>
@@ -85,7 +85,7 @@ function inline(text: string, key: string): ReactNode[] {
           href={m[10]}
           target="_blank"
           rel="noopener noreferrer nofollow"
-          className="font-medium break-all text-brand-600 underline decoration-brand-400/50 underline-offset-2 dark:text-brand-300"
+          className="font-medium break-all text-brand-700 underline decoration-brand-500/40 underline-offset-2 dark:text-brand-400"
         >
           {m[10]}
         </a>,
@@ -111,7 +111,7 @@ function CodeBlock({ code, lang }: { code: string; lang?: string }) {
   }
 
   return (
-    <div className="group/code my-[0.75em] overflow-hidden rounded-xl border border-black/10 bg-[#0d1224] dark:border-white/10">
+    <div className="group/code my-[0.75em] overflow-hidden rounded-xl border border-ink-200 bg-[#0d1224] dark:border-ink-800">
       <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-white/[0.04] px-3 py-1.5">
         <span className="font-mono text-[0.72em] tracking-wide text-ink-300 uppercase">
           {lang || 'kode'}
@@ -290,7 +290,7 @@ function renderBlocks(blocks: Block[], keyPrefix = 'b'): ReactNode[] {
       }
 
       case 'hr':
-        return <hr key={key} className="my-[1em] border-black/10 dark:border-white/10" />
+        return <hr key={key} className="my-[1em] border-ink-200 dark:border-ink-800" />
 
       case 'quote':
         return (
@@ -330,15 +330,15 @@ function renderBlocks(blocks: Block[], keyPrefix = 'b'): ReactNode[] {
         return (
           <div
             key={key}
-            className="thin-scrollbar my-[0.8em] overflow-x-auto rounded-xl border border-black/10 dark:border-white/10"
+            className="thin-scrollbar my-[0.8em] overflow-x-auto rounded-xl border border-ink-200 dark:border-ink-800"
           >
             <table className="w-full border-collapse text-left text-[0.9em]">
-              <thead className="bg-black/[0.04] dark:bg-white/[0.06]">
+              <thead className="bg-ink-100 dark:bg-ink-900/60">
                 <tr>
                   {b.head.map((h, j) => (
                     <th
                       key={j}
-                      className="border-b border-black/10 px-[0.8em] py-[0.5em] font-semibold whitespace-nowrap dark:border-white/10"
+                      className="border-b border-ink-200 px-[0.8em] py-[0.5em] font-semibold whitespace-nowrap dark:border-ink-800"
                     >
                       {inline(h, `${key}-h${j}`)}
                     </th>
@@ -347,11 +347,11 @@ function renderBlocks(blocks: Block[], keyPrefix = 'b'): ReactNode[] {
               </thead>
               <tbody>
                 {b.rows.map((row, r) => (
-                  <tr key={r} className="even:bg-black/[0.02] dark:even:bg-white/[0.03]">
+                  <tr key={r} className="even:bg-ink-50 dark:even:bg-ink-900/40">
                     {row.map((c, j) => (
                       <td
                         key={j}
-                        className="border-b border-black/5 px-[0.8em] py-[0.45em] align-top last:border-0 dark:border-white/5"
+                        className="border-b border-ink-200 px-[0.8em] py-[0.45em] align-top last:border-0 dark:border-white/5"
                       >
                         {inline(c, `${key}-c${r}-${j}`)}
                       </td>

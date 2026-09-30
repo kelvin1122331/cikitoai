@@ -50,10 +50,10 @@ export const MessageItem = memo(function MessageItem({
         className={cn(
           'mt-0.5 grid size-7 shrink-0 place-items-center rounded-full shadow-sm',
           isUser
-            ? 'bg-ink-200 text-ink-600 dark:bg-white/10 dark:text-ink-200'
+            ? 'bg-ink-100 text-ink-600 dark:bg-ink-800 dark:text-ink-300'
             : message.error
               ? 'bg-red-500/15 text-red-500'
-              : 'bg-gradient-to-br from-brand-500 to-cyan-400 text-white',
+              : 'bg-ink-950 text-white dark:bg-white dark:text-ink-950',
         )}
       >
         {isUser ? (
@@ -91,12 +91,12 @@ export const MessageItem = memo(function MessageItem({
         {/* Balon pesan */}
         <div
           className={cn(
-            'relative rounded-2xl px-3.5 py-2.5 text-[0.85em] shadow-sm transition-colors',
+            'relative rounded-xl px-3.5 py-2.5 text-[0.85em] shadow-soft transition-colors',
             isUser
-              ? 'rounded-tr-sm bg-gradient-to-br from-brand-600 to-indigo-600 text-white'
+              ? 'rounded-tr-sm bg-ink-950 text-white dark:bg-white dark:text-ink-950'
               : message.error
                 ? 'rounded-tl-sm border border-red-500/30 bg-red-500/[0.08] text-red-700 dark:text-red-200'
-                : 'rounded-tl-sm border border-black/[0.06] bg-white text-ink-800 dark:border-white/10 dark:bg-white/[0.06] dark:text-ink-100',
+                : 'rounded-tl-sm border border-ink-200 bg-white text-ink-800 dark:border-ink-800 dark:bg-ink-900/60 dark:text-ink-100',
           )}
         >
           {isUser ? (
@@ -133,7 +133,7 @@ export const MessageItem = memo(function MessageItem({
               type="button"
               onClick={handleCopy}
               aria-label="Salin pesan"
-              className="rounded p-1 hover:bg-black/[0.06] hover:text-ink-700 dark:hover:bg-white/10 dark:hover:text-white"
+              className="rounded p-1 hover:bg-ink-100 hover:text-ink-700 dark:hover:bg-ink-800 dark:hover:text-white"
             >
               {copied ? <Check className="size-3 text-emerald-500" /> : <Copy className="size-3" />}
             </button>
@@ -142,7 +142,7 @@ export const MessageItem = memo(function MessageItem({
                 type="button"
                 onClick={onRegenerate}
                 aria-label="Buat ulang jawaban"
-                className="rounded p-1 hover:bg-black/[0.06] hover:text-ink-700 dark:hover:bg-white/10 dark:hover:text-white"
+                className="rounded p-1 hover:bg-ink-100 hover:text-ink-700 dark:hover:bg-ink-800 dark:hover:text-white"
               >
                 <RefreshCw className="size-3" />
               </button>

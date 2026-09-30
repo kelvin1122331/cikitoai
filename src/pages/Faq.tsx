@@ -50,31 +50,28 @@ export function Faq({ onLaunch, active }: Props) {
         subtitle="Soal model, keamanan API key, mode demo, penggunaan di ponsel, dan apa yang bertahan saat peramban ditutup."
       />
 
-      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
-        <div className="space-y-3">
+      <section className="mx-auto max-w-3xl px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="card divide-y divide-ink-200 overflow-hidden dark:divide-ink-800">
           {FAQS.map((f, i) => {
             const isOpen = open === i
             return (
-              <div
-                key={f.q}
-                className={cn(
-                  'overflow-hidden rounded-2xl border transition-all duration-200',
-                  isOpen
-                    ? 'border-brand-400/50 bg-white/80 shadow-lg dark:bg-white/[0.05]'
-                    : 'border-black/[0.07] bg-white/60 dark:border-white/[0.08] dark:bg-white/[0.02]',
-                )}
-              >
+              <div key={f.q}>
                 <button
                   type="button"
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center gap-3 px-5 py-4 text-left"
+                  className={cn(
+                    'flex w-full cursor-pointer items-center gap-4 px-6 py-5 text-left transition-colors duration-200',
+                    isOpen
+                      ? 'text-ink-950 dark:text-white'
+                      : 'text-ink-700 hover:bg-ink-50/70 dark:text-ink-300 dark:hover:bg-ink-900/40',
+                  )}
                 >
-                  <span className="flex-1 text-sm font-bold sm:text-base">{f.q}</span>
+                  <span className="flex-1 text-sm font-medium sm:text-base">{f.q}</span>
                   <ChevronDown
                     className={cn(
-                      'size-5 shrink-0 text-ink-400 transition-transform duration-200',
-                      isOpen && 'rotate-180 text-brand-500',
+                      'size-4 shrink-0 text-ink-400 transition-transform duration-300',
+                      isOpen && 'rotate-180 text-brand-600 dark:text-brand-400',
                     )}
                   />
                 </button>
@@ -85,7 +82,7 @@ export function Faq({ onLaunch, active }: Props) {
                   )}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-5 pb-4 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                    <p className="px-6 pb-5 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
                       {f.a}
                     </p>
                   </div>
@@ -95,13 +92,10 @@ export function Faq({ onLaunch, active }: Props) {
           })}
         </div>
 
-        <p className="mt-8 text-center text-sm text-ink-500 dark:text-ink-400">
+        <p className="mt-8 text-sm text-ink-500 dark:text-ink-400">
           Masih penasaran soal menempelkannya di situs lain?{' '}
-          <Link
-            to="/bawa-ke-mana-saja"
-            className="font-bold text-brand-600 underline-offset-4 hover:underline dark:text-brand-300"
-          >
-            Baca halaman “Bawa ke mana saja”
+          <Link to="/bawa-ke-mana-saja" className="link">
+            Baca halaman Bawa ke mana saja
           </Link>
           .
         </p>

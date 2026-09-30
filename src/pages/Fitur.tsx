@@ -1,7 +1,16 @@
-import { Boxes, Code2, Maximize2, Minimize2, Monitor, Move, ShieldCheck, Smartphone, Zap } from 'lucide-react'
+import {
+  Boxes,
+  Code2,
+  Maximize2,
+  Minimize2,
+  Monitor,
+  Move,
+  ShieldCheck,
+  Smartphone,
+  Zap,
+} from 'lucide-react'
 import { usePageMeta } from '../lib/router'
-import { cn } from '../lib/utils'
-import { CtaBanner, DeviceMock, PageHero, Pager } from '../site/parts'
+import { CtaBanner, DeviceMock, PageHero, Pager, SectionTitle } from '../site/parts'
 import { ROUTE_MAP } from '../site/routes'
 
 interface Props {
@@ -14,37 +23,49 @@ const FEATURES = [
     icon: Move,
     title: 'Geser ke mana saja',
     desc: 'Tarik bubble dengan mouse atau jari. Lepas, dan ia menempel rapi ke tepi layar terdekat.',
-    accent: 'from-violet-500 to-purple-600',
   },
   {
     icon: Maximize2,
     title: 'Ukuran bebas diatur',
     desc: 'Tarik 8 titik di tepi panel, pakai preset Kecil/Sedang/Besar, layar penuh, plus skala teks 80–150%.',
-    accent: 'from-blue-500 to-cyan-500',
   },
   {
     icon: Minimize2,
     title: 'Buka–tutup instan',
-    desc: 'Kecilkan jadi bubble, tekan Esc, atau tarik ke bawah di ponsel. Posisi & ukuran selalu diingat.',
-    accent: 'from-emerald-500 to-teal-600',
+    desc: 'Kecilkan jadi bubble, tekan Esc, atau tarik ke bawah di ponsel. Posisi dan ukuran selalu diingat.',
   },
   {
     icon: Boxes,
     title: 'Model AI apa pun',
     desc: 'OpenAI, Claude, Gemini, Groq, OpenRouter, DeepSeek, Mistral, xAI, Ollama, atau endpoint kustom.',
-    accent: 'from-amber-500 to-orange-600',
   },
   {
     icon: Zap,
     title: 'Jawaban streaming',
     desc: 'Teks mengalir kata demi kata lewat SSE, bisa dihentikan kapan saja, lengkap dengan proses berpikir.',
-    accent: 'from-rose-500 to-pink-600',
   },
   {
     icon: ShieldCheck,
     title: 'Kunci tetap milikmu',
-    desc: 'API key hanya tersimpan di browser dan diteruskan langsung ke penyedia — tidak pernah ditulis ke disk.',
-    accent: 'from-indigo-500 to-blue-700',
+    desc: 'API key hanya tersimpan di peramban dan diteruskan langsung ke penyedia — tidak pernah ditulis ke disk.',
+  },
+]
+
+const SURFACES = [
+  {
+    icon: Monitor,
+    t: 'Desktop',
+    d: 'Panel mengambang, 8 titik ubah ukuran, layar penuh, pintasan Esc dan Ctrl + K.',
+  },
+  {
+    icon: Smartphone,
+    t: 'Ponsel',
+    d: 'Berubah jadi bottom sheet lebar penuh dengan pegangan tarik dan target sentuh lega.',
+  },
+  {
+    icon: Code2,
+    t: 'Konten kaya',
+    d: 'Markdown, tabel, dan blok kode dengan penyorotan serta tombol salin satu klik.',
   },
 ]
 
@@ -57,73 +78,52 @@ export function Fitur({ onLaunch, active }: Props) {
       <PageHero
         route={route}
         title="Dibuat semaksimal mungkin"
-        subtitle="Setiap detail interaksi digarap: dari fisika geser, pegangan ubah ukuran, sampai render Markdown dan streaming token."
+        subtitle="Setiap detail interaksi digarap: dari fisika geser dan pegangan ubah ukuran, sampai render Markdown dan streaming token."
       />
 
-      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="card grid gap-px overflow-hidden bg-ink-200 sm:grid-cols-2 lg:grid-cols-3 dark:bg-ink-800">
           {FEATURES.map((f, i) => (
             <article
               key={f.title}
-              className="group relative animate-fade-up overflow-hidden rounded-2xl border border-black/[0.07] bg-white/70 p-6 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-brand-300/60 hover:shadow-xl dark:border-white/[0.08] dark:bg-white/[0.03] dark:hover:border-brand-400/30"
-              style={{ animationDelay: `${i * 60}ms` }}
+              className="group animate-fade-up bg-white p-7 transition-colors duration-200 hover:bg-ink-50/70 dark:bg-ink-950 dark:hover:bg-ink-900/40"
+              style={{ animationDelay: `${i * 50}ms` }}
             >
-              <div
-                className={cn(
-                  'grid size-11 place-items-center rounded-xl bg-gradient-to-br text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3',
-                  f.accent,
-                )}
-              >
-                <f.icon className="size-5" />
-              </div>
-              <h3 className="mt-4 text-lg font-bold tracking-tight">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">{f.desc}</p>
-              <div className="pointer-events-none absolute -right-8 -bottom-8 size-24 rounded-full bg-brand-500/10 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+              <span className="grid size-9 place-items-center rounded-lg border border-ink-200 bg-ink-50 text-ink-700 transition-colors duration-200 group-hover:border-brand-500/30 group-hover:bg-brand-500/10 group-hover:text-brand-600 dark:border-ink-800 dark:bg-ink-900 dark:text-ink-300 dark:group-hover:text-brand-400">
+                <f.icon className="size-4" />
+              </span>
+              <h3 className="mt-5 text-base font-medium text-ink-950 dark:text-white">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
+                {f.desc}
+              </p>
             </article>
           ))}
         </div>
       </section>
 
       {/* -------------------------------------------------------- responsif */}
-      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl border border-black/[0.07] bg-gradient-to-br from-brand-500/[0.09] via-transparent to-cyan-500/[0.09] p-8 sm:p-12 dark:border-white/[0.08]">
-          <div className="grid items-center gap-10 lg:grid-cols-2">
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="card overflow-hidden p-8 sm:p-12">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <span className="text-xs font-bold tracking-[0.18em] text-brand-600 uppercase dark:text-brand-300">
-                Responsif
-              </span>
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Nyaman dari layar 320px sampai ultrawide
-              </h2>
-              <p className="mt-4 text-ink-600 dark:text-ink-300">
-                Di desktop ia panel mengambang yang bisa digeser & diubah ukurannya. Di ponsel ia
-                berubah jadi bottom sheet lebar penuh dengan pegangan tarik. Semua otomatis.
-              </p>
-              <ul className="mt-6 space-y-3">
-                {[
-                  {
-                    icon: Monitor,
-                    t: 'Desktop',
-                    d: 'Panel mengambang, 8 titik resize, layar penuh, pintasan Esc.',
-                  },
-                  {
-                    icon: Smartphone,
-                    t: 'Ponsel',
-                    d: 'Bottom sheet, tarik ke bawah untuk menutup, target sentuh lega.',
-                  },
-                  {
-                    icon: Code2,
-                    t: 'Konten kaya',
-                    d: 'Markdown, tabel, dan blok kode dengan tombol salin.',
-                  },
-                ].map((r) => (
-                  <li key={r.t} className="flex gap-3">
-                    <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand-600 shadow-sm dark:bg-white/10 dark:text-brand-300">
+              <SectionTitle
+                eyebrow="Responsif"
+                title="Nyaman dari layar 320px sampai ultrawide"
+                desc="Di desktop ia panel mengambang yang bisa digeser dan diubah ukurannya. Di ponsel ia berubah jadi bottom sheet lebar penuh. Semuanya otomatis."
+              />
+              <ul className="mt-8 space-y-5">
+                {SURFACES.map((r) => (
+                  <li key={r.t} className="flex gap-4">
+                    <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg border border-ink-200 bg-white text-ink-700 dark:border-ink-800 dark:bg-ink-900 dark:text-ink-300">
                       <r.icon className="size-4" />
                     </span>
                     <span>
-                      <strong className="block text-sm font-bold">{r.t}</strong>
-                      <span className="text-sm text-ink-600 dark:text-ink-400">{r.d}</span>
+                      <strong className="block text-sm font-medium text-ink-950 dark:text-white">
+                        {r.t}
+                      </strong>
+                      <span className="mt-1 block text-sm leading-relaxed text-ink-600 dark:text-ink-400">
+                        {r.d}
+                      </span>
                     </span>
                   </li>
                 ))}

@@ -17,14 +17,15 @@ export function IconButton({
       {...rest}
       className={cn(
         'inline-flex shrink-0 items-center justify-center rounded-lg transition-all duration-150',
-        'focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-0 focus-visible:outline-none',
+        'focus-visible:ring-2 focus-visible:ring-brand-500/60 focus-visible:ring-offset-0 focus-visible:outline-none',
         'disabled:pointer-events-none disabled:opacity-40',
         tone === 'ghost' &&
-          'text-ink-500 hover:bg-black/[0.06] hover:text-ink-900 active:scale-90 dark:text-ink-300 dark:hover:bg-white/10 dark:hover:text-white',
+          'text-ink-500 hover:bg-ink-100 hover:text-ink-950 active:scale-90 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-white',
         tone === 'danger' &&
           'text-ink-500 hover:bg-red-500/10 hover:text-red-500 active:scale-90 dark:text-ink-300',
-        tone === 'solid' && 'bg-brand-600 text-white shadow-sm hover:bg-brand-500 active:scale-95',
-        active && 'bg-brand-500/15 text-brand-600 dark:bg-brand-400/20 dark:text-brand-200',
+        tone === 'solid' &&
+          'bg-ink-950 text-white shadow-sm hover:bg-ink-800 active:scale-95 dark:bg-white dark:text-ink-950 dark:hover:bg-ink-200',
+        active && 'bg-brand-500/12 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300',
         className,
       )}
     >
@@ -66,10 +67,10 @@ export function Field({
 }
 
 export const inputClass = cn(
-  'w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-[0.85em] text-ink-900',
+  'w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-[0.85em] text-ink-900',
   'placeholder:text-ink-400 transition-colors',
-  'focus:border-brand-400 focus:ring-2 focus:ring-brand-400/25 focus:outline-none',
-  'dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:placeholder:text-ink-500',
+  'focus:border-brand-500/70 focus:ring-2 focus:ring-brand-500/20 focus:outline-none',
+  'dark:border-ink-800 dark:bg-ink-900/50 dark:text-white dark:placeholder:text-ink-500',
 )
 
 export function TextInput({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) {

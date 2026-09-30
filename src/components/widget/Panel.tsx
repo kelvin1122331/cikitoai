@@ -132,7 +132,7 @@ function ResizeHandle({
         'absolute z-20 touch-none',
         pos[dir],
         edge ? 'rounded-full' : 'rounded-md',
-        'hover:bg-brand-500/25',
+        'hover:bg-brand-500/20',
       )}
       style={{ cursor: CURSORS[dir] }}
     />
@@ -262,21 +262,19 @@ export function Panel({
       aria-label="Asisten CikitoAI"
       className={cn(
         'fixed z-[9999] flex animate-pop flex-col overflow-hidden',
-        'rounded-2xl border border-black/[0.08] bg-white/90 shadow-panel backdrop-blur-2xl',
-        'dark:border-white/[0.09] dark:bg-ink-950/85',
-        'supports-[backdrop-filter]:bg-white/80 dark:supports-[backdrop-filter]:bg-ink-950/75',
+        'rounded-xl border border-ink-200 bg-white shadow-panel backdrop-blur-2xl',
+        'dark:border-ink-800 dark:bg-ink-950',
+        'supports-[backdrop-filter]:bg-white/90 dark:supports-[backdrop-filter]:bg-ink-950/90',
         (animate || morphing) &&
           'transition-[left,top,right,bottom,width,height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
       )}
       style={style}
     >
-      {/* Aksen atas */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-400/70 to-transparent" />
 
       {/* Grabber mobile */}
       {isMobile && (
         <div {...sheetDrag} className="flex cursor-grab touch-none justify-center pt-2 pb-1">
-          <span className="h-1 w-10 rounded-full bg-ink-300 dark:bg-white/20" />
+          <span className="h-1 w-10 rounded-full bg-ink-300 dark:bg-ink-700" />
         </div>
       )}
 
@@ -285,17 +283,16 @@ export function Panel({
         {...headerDrag}
         onDoubleClick={() => !isMobile && onToggleMaximize()}
         className={cn(
-          'relative flex shrink-0 items-center gap-2 border-b border-black/[0.07] px-2.5 py-2 dark:border-white/[0.08]',
-          'bg-gradient-to-r from-brand-500/[0.07] via-transparent to-cyan-500/[0.07]',
+          'relative flex shrink-0 items-center gap-2 border-b border-ink-200 px-2.5 py-2 dark:border-ink-800',
           !locked && 'cursor-grab touch-none active:cursor-grabbing',
         )}
       >
-        <div className="relative grid size-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-500 via-indigo-500 to-cyan-400 text-white shadow-sm">
+        <div className="relative grid size-8 shrink-0 place-items-center rounded-[10px] bg-ink-950 text-white shadow-sm dark:bg-white dark:text-ink-950">
           <Sparkles className="size-4" />
           <span
             className={cn(
               'absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-white dark:border-ink-950',
-              statusTone === 'ok' && 'bg-emerald-500',
+              statusTone === 'ok' && 'bg-brand-500',
               statusTone === 'warn' && 'bg-amber-500',
               statusTone === 'busy' && 'animate-pulse bg-brand-400',
             )}
@@ -332,7 +329,7 @@ export function Panel({
             </IconButton>
 
             {sizeMenu && (
-              <div className="absolute right-0 z-30 mt-1.5 w-52 animate-fade-in rounded-xl border border-black/10 bg-white p-2 shadow-xl dark:border-white/10 dark:bg-ink-900">
+              <div className="absolute right-0 z-30 mt-1.5 w-52 animate-fade-in rounded-xl border border-ink-200 bg-white p-2 shadow-xl dark:border-ink-800 dark:bg-ink-900">
                 {!isMobile && (
                   <>
                     <p className="px-1 pb-1 text-[0.66em] font-bold tracking-wide text-ink-400 uppercase">
@@ -353,8 +350,8 @@ export function Panel({
                             className={cn(
                               'flex flex-col items-center gap-1 rounded-lg border px-1 py-1.5 text-[0.62em] font-semibold transition',
                               active
-                                ? 'border-brand-400 bg-brand-500/10 text-brand-600 dark:text-brand-300'
-                                : 'border-black/10 text-ink-500 hover:bg-black/[0.04] dark:border-white/10 dark:text-ink-300 dark:hover:bg-white/5',
+                                ? 'border-brand-500/60 bg-brand-500/10 text-brand-700 dark:text-brand-300'
+                                : 'border-ink-200 text-ink-500 hover:bg-ink-100 dark:border-ink-800 dark:text-ink-300 dark:hover:bg-ink-800',
                             )}
                           >
                             <Icon className="size-3.5" />
@@ -369,12 +366,12 @@ export function Panel({
                         onToggleMaximize()
                         setSizeMenu(false)
                       }}
-                      className="mt-1 flex w-full items-center gap-1.5 rounded-lg px-2 py-1.5 text-[0.7em] font-semibold text-ink-600 transition hover:bg-black/[0.04] dark:text-ink-300 dark:hover:bg-white/5"
+                      className="mt-1 flex w-full items-center gap-1.5 rounded-lg px-2 py-1.5 text-[0.7em] font-semibold text-ink-600 transition hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800"
                     >
                       {maximized ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
                       {maximized ? 'Kembalikan ukuran' : 'Layar penuh'}
                     </button>
-                    <div className="my-1.5 h-px bg-black/[0.07] dark:bg-white/10" />
+                    <div className="my-1.5 h-px bg-ink-200 dark:bg-ink-800" />
                   </>
                 )}
 
@@ -385,7 +382,7 @@ export function Panel({
                   <button
                     type="button"
                     onClick={() => onScaleChange(clamp(+(scale - 0.1).toFixed(2), 0.8, 1.5))}
-                    className="grid size-6 place-items-center rounded-md border border-black/10 text-[0.7em] font-bold hover:bg-black/[0.05] dark:border-white/10 dark:hover:bg-white/5"
+                    className="grid size-6 place-items-center rounded-md border border-ink-200 text-[0.7em] font-bold hover:bg-ink-100 dark:border-ink-800 dark:hover:bg-ink-800"
                     aria-label="Perkecil teks"
                   >
                     A－
@@ -397,13 +394,13 @@ export function Panel({
                     step={0.05}
                     value={scale}
                     onChange={(e) => onScaleChange(Number(e.target.value))}
-                    className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-ink-200 accent-brand-600 dark:bg-white/15"
+                    className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-ink-200 accent-brand-600 dark:bg-ink-800"
                     aria-label="Skala teks"
                   />
                   <button
                     type="button"
                     onClick={() => onScaleChange(clamp(+(scale + 0.1).toFixed(2), 0.8, 1.5))}
-                    className="grid size-6 place-items-center rounded-md border border-black/10 text-[0.7em] font-bold hover:bg-black/[0.05] dark:border-white/10 dark:hover:bg-white/5"
+                    className="grid size-6 place-items-center rounded-md border border-ink-200 text-[0.7em] font-bold hover:bg-ink-100 dark:border-ink-800 dark:hover:bg-ink-800"
                     aria-label="Perbesar teks"
                   >
                     A＋
@@ -413,7 +410,7 @@ export function Panel({
                   <button
                     type="button"
                     onClick={() => onScaleChange(1)}
-                    className="mt-1.5 w-full rounded-lg px-2 py-1 text-[0.66em] font-semibold text-brand-600 hover:bg-brand-500/10 dark:text-brand-300"
+                    className="mt-1.5 w-full rounded-lg px-2 py-1 text-[0.66em] font-semibold text-brand-700 hover:bg-brand-500/10 dark:text-brand-400"
                   >
                     Kembalikan ke 100%
                   </button>

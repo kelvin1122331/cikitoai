@@ -53,10 +53,10 @@ function CopyButton({ text, label = 'Salin' }: { text: string; label?: string })
         window.setTimeout(() => setDone(false), 1600)
       }}
       className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold transition',
+        'btn btn-sm border',
         done
-          ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300'
-          : 'border-black/10 bg-white/70 text-ink-600 hover:bg-white dark:border-white/15 dark:bg-white/5 dark:text-ink-200 dark:hover:bg-white/10',
+          ? 'border-brand-500/40 bg-brand-500/10 text-brand-700 dark:text-brand-300'
+          : 'border-ink-200 bg-white text-ink-600 hover:border-ink-300 hover:text-ink-950 dark:border-ink-800 dark:bg-ink-900/60 dark:text-ink-300 dark:hover:text-white',
       )}
     >
       {done ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
@@ -67,14 +67,14 @@ function CopyButton({ text, label = 'Salin' }: { text: string; label?: string })
 
 function Code({ children, copy }: { children: string; copy?: string }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-black/10 bg-ink-950/95 dark:border-white/10">
-      <div className="flex items-center justify-between gap-2 border-b border-white/10 px-3 py-1.5">
-        <span className="flex items-center gap-1.5 text-[0.68rem] font-bold tracking-wide text-ink-400 uppercase">
+    <div className="relative overflow-hidden rounded-xl border border-ink-200 bg-ink-950 dark:border-ink-800">
+      <div className="flex items-center justify-between gap-2 border-b border-white/10 px-3 py-2">
+        <span className="flex items-center gap-1.5 font-mono text-[0.68rem] tracking-wide text-ink-400 uppercase">
           <TerminalSquare className="size-3.5" /> Salin–tempel
         </span>
         <CopyButton text={copy ?? children} />
       </div>
-      <pre className="thin-scrollbar overflow-x-auto p-3 text-[0.78rem] leading-relaxed text-ink-100">
+      <pre className="thin-scrollbar overflow-x-auto p-4 text-[0.78rem] leading-relaxed text-ink-200">
         <code>{children}</code>
       </pre>
     </div>
@@ -83,8 +83,8 @@ function Code({ children, copy }: { children: string; copy?: string }) {
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex flex-col gap-0.5 border-b border-black/[0.06] py-2 last:border-0 sm:flex-row sm:gap-4 dark:border-white/[0.07]">
-      <code className="shrink-0 font-mono text-[0.75rem] font-bold text-brand-600 sm:w-44 dark:text-brand-300">
+    <div className="flex flex-col gap-1 border-b border-ink-200 py-2.5 last:border-0 sm:flex-row sm:gap-4 dark:border-ink-800">
+      <code className="shrink-0 font-mono text-[0.75rem] text-brand-700 sm:w-44 dark:text-brand-400">
         {k}
       </code>
       <span className="text-sm text-ink-600 dark:text-ink-400">{v}</span>
@@ -131,7 +131,7 @@ export function Distribusi() {
     if (dpip?.requestWindow) {
       try {
         const pip = await dpip.requestWindow({ width: 420, height: 680 })
-        pip.document.body.style.cssText = 'margin:0;background:#0b0e1a;overflow:hidden'
+        pip.document.body.style.cssText = 'margin:0;background:#09090b;overflow:hidden'
         const frame = pip.document.createElement('iframe')
         frame.src = url
         frame.setAttribute('title', 'CikitoAI')
@@ -149,17 +149,17 @@ export function Distribusi() {
     <section id="bawa-ke-mana-saja" className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
       {/* Tab */}
       <div className="mask-fade-x -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <div className="mx-auto flex w-max gap-1.5 rounded-2xl border border-black/[0.07] bg-white/70 p-1.5 backdrop-blur dark:border-white/[0.08] dark:bg-white/[0.04]">
+        <div className="flex w-max gap-1 rounded-xl border border-ink-200 bg-ink-50 p-1 dark:border-ink-800 dark:bg-ink-900/50">
           {TABS.map((t) => (
             <button
               key={t.id}
               type="button"
               onClick={() => setTab(t.id)}
               className={cn(
-                'flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-bold whitespace-nowrap transition',
+                'flex cursor-pointer items-center gap-2 rounded-lg px-3.5 py-2 text-sm whitespace-nowrap transition-all duration-200',
                 tab === t.id
-                  ? 'bg-gradient-to-br from-brand-500 to-indigo-600 text-white shadow-md'
-                  : 'text-ink-500 hover:bg-black/[0.04] dark:text-ink-300 dark:hover:bg-white/5',
+                  ? 'bg-white font-medium text-ink-950 shadow-soft dark:bg-ink-950 dark:text-white'
+                  : 'text-ink-500 hover:text-ink-950 dark:text-ink-400 dark:hover:text-white',
               )}
               aria-pressed={tab === t.id}
             >
@@ -170,13 +170,13 @@ export function Distribusi() {
         </div>
       </div>
 
-      <div className="mt-8 rounded-3xl border border-black/[0.07] bg-white/70 p-5 backdrop-blur sm:p-8 dark:border-white/[0.08] dark:bg-white/[0.03]">
+      <div className="card mt-6 p-6 sm:p-8">
         {/* ------------------------------------------------------- script */}
         {tab === 'script' && (
           <div className="grid animate-fade-in gap-8 lg:grid-cols-[1.1fr_1fr]">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold">
-                <Globe className="size-5 text-brand-500" />
+              <h3 className="flex items-center gap-2.5 text-lg font-medium text-ink-950 dark:text-white">
+                <Globe className="size-4.5 text-brand-600 dark:text-brand-400" />
                 Satu baris skrip, selesai
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
@@ -192,7 +192,7 @@ export function Distribusi() {
                   href="/demo-tempel.html"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-ink-900 px-4 py-2.5 text-sm font-bold text-white transition hover:-translate-y-0.5 dark:bg-white dark:text-ink-900"
+                  className="btn btn-primary btn-md"
                 >
                   <ExternalLink className="size-4" />
                   Lihat contoh situs tuan rumah
@@ -204,7 +204,7 @@ export function Distribusi() {
             </div>
 
             <div>
-              <h4 className="text-sm font-bold tracking-wide text-ink-500 uppercase dark:text-ink-400">
+              <h4 className="eyebrow">
                 Atribut yang tersedia
               </h4>
               <div className="mt-2">
@@ -219,21 +219,21 @@ export function Distribusi() {
                 <Row k="data-provider / data-model" v="Isian awal penyedia & nama model." />
                 <Row k="data-z-index" v="Ubah tumpukan bila situs punya elemen sangat tinggi." />
               </div>
-              <p className="mt-4 rounded-xl bg-brand-500/[0.07] p-3 text-xs leading-relaxed text-ink-600 dark:text-ink-300">
+              <p className="mt-5 rounded-lg border border-ink-200 bg-ink-50 p-3.5 text-xs leading-relaxed text-ink-600 dark:border-ink-800 dark:bg-ink-900/50 dark:text-ink-400">
                 Kontrol lewat JavaScript juga bisa:{' '}
-                <code className="font-mono text-brand-600 dark:text-brand-300">
+                <code className="font-mono text-brand-700 dark:text-brand-400">
                   CikitoAI.open()
                 </code>
                 ,{' '}
-                <code className="font-mono text-brand-600 dark:text-brand-300">
+                <code className="font-mono text-brand-700 dark:text-brand-400">
                   CikitoAI.close()
                 </code>
                 ,{' '}
-                <code className="font-mono text-brand-600 dark:text-brand-300">
+                <code className="font-mono text-brand-700 dark:text-brand-400">
                   CikitoAI.toggle()
                 </code>
                 ,{' '}
-                <code className="font-mono text-brand-600 dark:text-brand-300">
+                <code className="font-mono text-brand-700 dark:text-brand-400">
                   CikitoAI.destroy()
                 </code>
                 .
@@ -246,12 +246,12 @@ export function Distribusi() {
         {tab === 'bookmarklet' && (
           <div className="grid animate-fade-in items-start gap-8 lg:grid-cols-[1fr_1fr]">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold">
-                <Bookmark className="size-5 text-brand-500" />
+              <h3 className="flex items-center gap-2.5 text-lg font-medium text-ink-950 dark:text-white">
+                <Bookmark className="size-4.5 text-brand-600 dark:text-brand-400" />
                 Panggil di website orang lain
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
-                Seret tombol ungu di bawah ini ke bilah bookmark peramban. Klik bookmark itu saat
+                Seret tombol di bawah ini ke bilah bookmark peramban. Klik bookmark itu saat
                 membuka website apa pun — bubble CikitoAI langsung muncul di sana, tanpa perlu
                 mengubah website tersebut.
               </p>
@@ -262,7 +262,7 @@ export function Distribusi() {
                   onClick={(e) => e.preventDefault()}
                   draggable
                   title="Seret saya ke bilah bookmark"
-                  className="inline-flex cursor-grab items-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg active:cursor-grabbing"
+                  className="btn btn-primary btn-md cursor-grab active:cursor-grabbing"
                 >
                   <Sparkles className="size-4" />
                   CikitoAI
@@ -283,11 +283,11 @@ export function Distribusi() {
               </ol>
             </div>
 
-            <div className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.07] p-4">
-              <h4 className="text-sm font-bold text-amber-700 dark:text-amber-300">
+            <div className="rounded-xl border border-amber-500/25 bg-amber-500/[0.06] p-5">
+              <h4 className="text-sm font-medium text-amber-700 dark:text-amber-400">
                 Catatan jujur soal keterbatasan
               </h4>
-              <ul className="mt-2 space-y-2 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+              <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
                 <li>
                   • Sebagian situs (GitHub, bank, dsb.) memasang <em>Content Security Policy</em>{' '}
                   ketat yang memblokir skrip dari domain lain. Di situs seperti itu bookmarklet
@@ -307,8 +307,8 @@ export function Distribusi() {
         {tab === 'popout' && (
           <div className="grid animate-fade-in items-center gap-8 lg:grid-cols-[1fr_1fr]">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold">
-                <PictureInPicture2 className="size-5 text-brand-500" />
+              <h3 className="flex items-center gap-2.5 text-lg font-medium text-ink-950 dark:text-white">
+                <PictureInPicture2 className="size-4.5 text-brand-600 dark:text-brand-400" />
                 Keluar dari tab, tetap di atas layar
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
@@ -325,7 +325,7 @@ export function Distribusi() {
               <button
                 type="button"
                 onClick={openPopout}
-                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5"
+                className="btn btn-primary btn-md mt-5"
               >
                 <PictureInPicture2 className="size-4" />
                 Buka jendela mengambang sekarang
@@ -333,32 +333,31 @@ export function Distribusi() {
             </div>
 
             <div className="relative">
-              <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-brand-500/15 to-cyan-400/15 blur-2xl" />
-              <div className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-ink-900">
-                <div className="flex items-center gap-1.5 border-b border-black/[0.07] bg-black/[0.03] px-3 py-2 dark:border-white/10 dark:bg-white/5">
-                  <span className="size-2.5 rounded-full bg-red-400" />
-                  <span className="size-2.5 rounded-full bg-amber-400" />
-                  <span className="size-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-[0.7rem] font-semibold text-ink-500">
+              <div className="overflow-hidden rounded-xl border border-ink-200 bg-white shadow-lift dark:border-ink-800 dark:bg-ink-950">
+                <div className="flex items-center gap-1.5 border-b border-ink-200 bg-ink-50 px-3 py-2.5 dark:border-ink-800 dark:bg-ink-900/50">
+                  <span className="size-2.5 rounded-full bg-ink-200 dark:bg-ink-800" />
+                  <span className="size-2.5 rounded-full bg-ink-200 dark:bg-ink-800" />
+                  <span className="size-2.5 rounded-full bg-ink-200 dark:bg-ink-800" />
+                  <span className="ml-2 text-[0.7rem] text-ink-500">
                     CikitoAI — jendela mengambang
                   </span>
                 </div>
                 <div className="space-y-2 p-4">
-                  <div className="ml-auto w-3/5 rounded-2xl rounded-br-md bg-gradient-to-br from-brand-500 to-indigo-600 px-3 py-2 text-xs text-white">
+                  <div className="ml-auto w-3/5 rounded-xl rounded-br-sm bg-ink-950 px-3 py-2 text-xs text-white dark:bg-white dark:text-ink-950">
                     Ringkas dokumen ini dong
                   </div>
-                  <div className="w-4/5 rounded-2xl rounded-bl-md bg-black/[0.05] px-3 py-2 text-xs text-ink-600 dark:bg-white/10 dark:text-ink-200">
+                  <div className="w-4/5 rounded-xl rounded-bl-sm border border-ink-200 bg-ink-50 px-3 py-2 text-xs text-ink-600 dark:border-ink-800 dark:bg-ink-900/60 dark:text-ink-300">
                     Tentu. Ada tiga poin utama…
                   </div>
-                  <div className="w-2/5 rounded-2xl rounded-bl-md bg-black/[0.05] px-3 py-2 text-xs dark:bg-white/10">
+                  <div className="w-2/5 rounded-xl rounded-bl-sm border border-ink-200 bg-ink-50 px-3 py-2 text-xs dark:border-ink-800 dark:bg-ink-900/60">
                     <span className="inline-flex gap-1">
-                      <span className="size-1.5 animate-bounce-dot rounded-full bg-brand-400" />
+                      <span className="size-1.5 animate-bounce-dot rounded-full bg-brand-500" />
                       <span
-                        className="size-1.5 animate-bounce-dot rounded-full bg-brand-400"
+                        className="size-1.5 animate-bounce-dot rounded-full bg-brand-500"
                         style={{ animationDelay: '120ms' }}
                       />
                       <span
-                        className="size-1.5 animate-bounce-dot rounded-full bg-brand-400"
+                        className="size-1.5 animate-bounce-dot rounded-full bg-brand-500"
                         style={{ animationDelay: '240ms' }}
                       />
                     </span>
@@ -373,8 +372,8 @@ export function Distribusi() {
         {tab === 'extension' && (
           <div className="grid animate-fade-in gap-8 lg:grid-cols-[1fr_1fr]">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold">
-                <Blocks className="size-5 text-brand-500" />
+              <h3 className="flex items-center gap-2.5 text-lg font-medium text-ink-950 dark:text-white">
+                <Blocks className="size-4.5 text-brand-600 dark:text-brand-400" />
                 Ekstensi Chrome / Edge (Manifest V3)
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
@@ -394,7 +393,7 @@ npm run build:extension
             </div>
 
             <div>
-              <h4 className="text-sm font-bold tracking-wide text-ink-500 uppercase dark:text-ink-400">
+              <h4 className="eyebrow">
                 Isi paket
               </h4>
               <div className="mt-2">
@@ -406,7 +405,7 @@ npm run build:extension
                 <Row k="boot.js" v="Menyiapkan opsi widget dan saklar buka/tutup dari ikon." />
                 <Row k="widget.js" v="Bundel widget yang sama dengan mode tempel." />
               </div>
-              <p className="mt-4 rounded-xl bg-emerald-500/[0.08] p-3 text-xs leading-relaxed text-ink-600 dark:text-ink-300">
+              <p className="mt-5 rounded-lg border border-brand-500/20 bg-brand-500/[0.06] p-3.5 text-xs leading-relaxed text-ink-600 dark:text-ink-400">
                 Klik ikon ekstensi (atau <strong>Ctrl/Cmd + Shift + K</strong>) untuk membuka-tutup
                 bubble di halaman yang sedang dibuka. API key disimpan di penyimpanan lokal
                 peramban dan hanya dikirim ke penyedia yang kamu pilih.
@@ -419,8 +418,8 @@ npm run build:extension
         {tab === 'app' && (
           <div className="grid animate-fade-in gap-8 lg:grid-cols-[1fr_1fr]">
             <div>
-              <h3 className="flex items-center gap-2 text-lg font-bold">
-                <MonitorDown className="size-5 text-brand-500" />
+              <h3 className="flex items-center gap-2.5 text-lg font-medium text-ink-950 dark:text-white">
+                <MonitorDown className="size-4.5 text-brand-600 dark:text-brand-400" />
                 Pasang sebagai aplikasi sendiri
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
@@ -431,7 +430,7 @@ npm run build:extension
 
               <div className="mt-5">
                 {app.installed ? (
-                  <span className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2.5 text-sm font-bold text-emerald-600 dark:text-emerald-300">
+                  <span className="inline-flex items-center gap-2 rounded-lg border border-brand-500/40 bg-brand-500/10 px-4 py-2.5 text-sm font-medium text-brand-700 dark:text-brand-300">
                     <Check className="size-4" />
                     Sudah terpasang sebagai aplikasi
                   </span>
@@ -440,14 +439,14 @@ npm run build:extension
                     type="button"
                     onClick={() => void app.install()}
                     disabled={app.busy}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 disabled:opacity-60"
+                    className="btn btn-primary btn-md"
                   >
                     <MonitorDown className="size-4" />
                     Pasang CikitoAI di perangkat ini
                   </button>
                 ) : (
-                  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-3 text-sm text-ink-600 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">
-                    <strong className="block text-xs font-bold tracking-wide text-ink-500 uppercase dark:text-ink-400">
+                  <div className="rounded-lg border border-ink-200 bg-ink-50 p-4 text-sm text-ink-600 dark:border-ink-800 dark:bg-ink-900/50 dark:text-ink-400">
+                    <strong className="eyebrow">
                       Pasang manual
                     </strong>
                     <span className="mt-1 block">
@@ -467,19 +466,19 @@ npm run build:extension
             </div>
 
             <div>
-              <h4 className="text-sm font-bold tracking-wide text-ink-500 uppercase dark:text-ink-400">
+              <h4 className="eyebrow">
                 Apa yang bertahan, apa yang tidak
               </h4>
-              <div className="mt-2 overflow-hidden rounded-xl border border-black/[0.07] dark:border-white/[0.08]">
+              <div className="mt-3 overflow-hidden rounded-xl border border-ink-200 dark:border-ink-800">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-black/[0.04] text-[0.7rem] tracking-wide text-ink-500 uppercase dark:bg-white/5 dark:text-ink-400">
+                  <thead className="bg-ink-50 text-[0.7rem] tracking-wide text-ink-500 uppercase dark:bg-ink-900/60 dark:text-ink-400">
                     <tr>
-                      <th className="px-3 py-2 font-bold">Situasi</th>
-                      <th className="px-3 py-2 font-bold">Jendela mengambang</th>
-                      <th className="px-3 py-2 font-bold">Aplikasi terpasang</th>
+                      <th className="px-3 py-2.5 font-medium">Situasi</th>
+                      <th className="px-3 py-2.5 font-medium">Jendela mengambang</th>
+                      <th className="px-3 py-2.5 font-medium">Aplikasi terpasang</th>
                     </tr>
                   </thead>
-                  <tbody className="text-ink-600 dark:text-ink-300">
+                  <tbody className="text-ink-600 dark:text-ink-400">
                     {[
                       ['Pindah ke aplikasi lain', 'Tetap tampil di atas', 'Tetap terbuka'],
                       ['Peramban diperkecil', 'Tetap tampil', 'Tetap terbuka'],
@@ -488,16 +487,16 @@ npm run build:extension
                       ['Peramban benar-benar dikeluarkan', 'Tertutup', 'Tertutup'],
                       ['Dibuka lagi nanti', 'Riwayat & API key kembali', 'Riwayat & API key kembali'],
                     ].map(([a, b, c]) => (
-                      <tr key={a} className="border-t border-black/[0.06] dark:border-white/[0.07]">
-                        <td className="px-3 py-2 font-semibold">{a}</td>
-                        <td className="px-3 py-2">{b}</td>
-                        <td className="px-3 py-2">{c}</td>
+                      <tr key={a} className="border-t border-ink-200 dark:border-ink-800">
+                        <td className="px-3 py-2.5 font-medium text-ink-950 dark:text-white">{a}</td>
+                        <td className="px-3 py-2.5">{b}</td>
+                        <td className="px-3 py-2.5">{c}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className="mt-3 rounded-xl bg-amber-500/[0.08] p-3 text-xs leading-relaxed text-ink-600 dark:text-ink-300">
+              <p className="mt-4 rounded-lg border border-amber-500/20 bg-amber-500/[0.06] p-3.5 text-xs leading-relaxed text-ink-600 dark:text-ink-400">
                 Jujur soal batasnya: aplikasi terpasang tetap memakai mesin peramban di perangkatmu
                 dan tidak berjalan di latar belakang setelah ditutup. Untuk program desktop mandiri
                 yang benar-benar lepas dari peramban, bundelnya perlu dibungkus Electron/Tauri.

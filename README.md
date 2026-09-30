@@ -171,6 +171,31 @@ perlu dibungkus Electron/Tauri.
 
 Logika penerjemah penyedia dipakai bersama oleh ketiganya lewat `shared/ai-core.mjs`.
 
+## 🎨 Sistem desain
+
+Nuansa modern-minimalis (Vercel / Linear / Stripe): netral **zinc** sebagai dasar, satu aksen
+**emerald** yang dipakai hemat, tanpa gradien neon.
+
+| Token | Nilai | Dipakai untuk |
+| --- | --- | --- |
+| `--font-sans` | Inter (variable) | seluruh antarmuka |
+| `--font-mono` | JetBrains Mono | kode, path, angka teknis |
+| `ink-50 … ink-950` | skala zinc | permukaan, garis, teks |
+| `brand-50 … brand-950` | skala emerald | aksen, status, fokus, tautan aktif |
+| `--shadow-soft` / `--shadow-lift` | bayangan 1–2 lapis | kartu diam / kartu ter-hover |
+
+Kelas komponen ada di `src/index.css` (`@layer components`) supaya konsisten di semua halaman:
+
+- `.card` + `.card-hover` — radius 12 px, garis 1 px `ink-200` / `ink-800`, bayangan sangat lembut,
+  angkat 1 px saat hover.
+- `.btn` + `.btn-sm|md|lg` dengan varian `.btn-primary` (monokrom tegas: hitam di terang, putih di
+  gelap), `.btn-secondary` (outline tenang), `.btn-ghost`, `.btn-accent`.
+- `.eyebrow`, `.chip`, `.kbd`, `.link` — label kecil, pil, tombol papan ketik, tautan teks.
+- Semua transisi 180–220 ms dengan easing halus; hormati `prefers-reduced-motion`.
+
+Mode gelap memakai kelas `.dark` di `<html>`; override komponen ditulis `:where(.dark) .card`
+agar spesifisitasnya tetap rendah dan utilitas Tailwind (`dark:bg-…`) tetap bisa menimpanya.
+
 ## 🗺️ Halaman
 
 Setiap menu adalah **halaman tersendiri** dengan URL sendiri — bukan gulir di satu halaman
