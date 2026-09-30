@@ -8,6 +8,7 @@
  * Jaringan di-stub (SSE palsu) supaya hermetis dan tidak butuh API key.
  * Jalankan dengan:  npm run smoke
  */
+import { readFileSync, existsSync } from 'node:fs'
 import { JSDOM } from 'jsdom'
 import { createServer } from 'vite'
 
@@ -261,6 +262,24 @@ window.history.replaceState(null, '', '/')
 /* 14 — persistensi */
 check('Konfigurasi tersimpan', !!localStorage.getItem('cikito.config'))
 check('Riwayat chat tersimpan', (localStorage.getItem('cikito.messages') || '').includes('halo cikito'))
+
+/* 15 — bisa dipasang sebagai aplikasi (PWA) */
+const manifest = JSON.parse(readFileSync('public/manifest.webmanifest', 'utf8'))
+const iconSizes = manifest.icons.map((i) => i.sizes)
+check('Manifest valid & berdiri sendiri', manifest.display === 'standalone' && !!manifest.name)
+check('Manifest membuka layar chat', manifest.start_url === '/?cikito=popout')
+check(
+  'Ikon 192 + 512 + maskable tersedia',
+  iconSizes.includes('192x192') &&
+    iconSizes.includes('512x512') &&
+    manifest.icons.some((i) => i.purpose === 'maskable') &&
+    manifest.icons.every((i) => existsSync('public' + i.src)),
+)
+const swSource = readFileSync('public/sw.js', 'utf8')
+check("Service worker punya handler 'fetch'", /addEventListener\('fetch'/.test(swSource))
+check('Service worker tidak meng-cache /api', /\/api\//.test(swSource))
+const html = readFileSync('index.html', 'utf8')
+check('Halaman menautkan manifest & ikon', /rel="manifest"/.test(html) && /apple-touch-icon/.test(html))
 
 const realErrors = errors.filter(
   (e) => !/not wrapped in act|Warning: ReactDOM.render|useLayoutEffect does nothing on the server/.test(e),

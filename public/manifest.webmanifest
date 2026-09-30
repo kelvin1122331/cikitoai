@@ -1,0 +1,40 @@
+{
+  "id": "/?cikito=popout",
+  "name": "CikitoAI — Asisten AI Mengambang",
+  "short_name": "CikitoAI",
+  "description": "Asisten AI mengambang yang bisa digeser, diubah ukurannya, dan disambungkan ke model AI apa pun.",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "/?cikito=popout",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0b0e1a",
+  "theme_color": "#7c4dff",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Obrolan baru",
+      "short_name": "Chat",
+      "url": "/?cikito=popout",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Situs lengkap",
+      "short_name": "Situs",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

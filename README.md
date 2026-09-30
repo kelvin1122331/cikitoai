@@ -14,7 +14,8 @@ Tombol "Jalankan"  →  Bubble (digeser)  →  Form API  →  Tombol "Jalankan" 
 
 Dan bubble-nya **tidak terkurung di website ini**: tempel di situs lain dengan satu baris
 `<script>`, panggil lewat bookmarklet, lepas jadi **jendela mengambang** di atas aplikasi lain,
-atau pasang sebagai **ekstensi peramban**. Lihat [Bawa ke mana saja](#-bawa-ke-mana-saja).
+pasang sebagai **ekstensi peramban**, atau **pasang sebagai aplikasi** dengan ikon dan jendela
+sendiri. Lihat [Bawa ke mana saja](#-bawa-ke-mana-saja).
 
 ---
 
@@ -30,7 +31,7 @@ atau pasang sebagai **ekstensi peramban**. Lihat [Bawa ke mana saja](#-bawa-ke-m
 | **Markdown** | Judul, daftar, tabel, kutipan, tautan, blok kode dengan tombol salin (renderer sendiri, aman XSS) |
 | **Responsif** | Panel mengambang di desktop, bottom sheet di ponsel, target sentuh lega |
 | **Privasi** | API key hanya di `localStorage`; backend hanya me-relay, tidak menyimpan & tidak mencatat log |
-| **Bisa dibawa keluar** | Bundel tempel (Shadow DOM), bookmarklet, jendela mengambang (Document PiP), ekstensi MV3 |
+| **Bisa dibawa keluar** | Bundel tempel (Shadow DOM), bookmarklet, jendela mengambang (Document PiP), ekstensi MV3, PWA |
 | **Lainnya** | Tema gelap/terang, mode demo tanpa API key, tes koneksi, muat daftar model, riwayat chat tersimpan |
 
 ## 🔌 Penyedia yang didukung
@@ -64,12 +65,13 @@ npm start            # server Node tanpa dependensi (statis + /api), PORT=3000
 Perintah lain:
 
 ```bash
-npm run smoke            # smoke test end-to-end di jsdom (44 pemeriksaan, tanpa jaringan)
+npm run smoke            # smoke test end-to-end di jsdom (50 pemeriksaan, tanpa jaringan)
 npm run build:embed      # bundel tempel  → public/embed/cikito-widget.js
+npm run build:icons      # ikon PWA       → public/icons/*.png (digambar tanpa dependensi)
 npm run build:extension  # paket ekstensi → extension/ (widget.js, ai-core.mjs, ikon)
 ```
 
-> `npm run dev` dan `npm run build` otomatis membangun bundel tempel lebih dulu.
+> `npm run dev` dan `npm run build` otomatis membangun ikon + bundel tempel lebih dulu.
 
 ## 🌍 Bawa ke mana saja
 
@@ -133,6 +135,31 @@ npm run build:extension
 Cara paling bebas hambatan: **tanpa backend**, **tanpa CORS**, tetap jalan di situs ber-CSP ketat,
 karena permintaan jaringan dijembatani service worker ekstensi. Detail: [`extension/README.md`](extension/README.md).
 
+### 5. Pasang sebagai aplikasi (PWA)
+
+Tekan tombol **Pasang** di tab *Aplikasi desktop*, atau ikon **Pasang** di address bar
+Chrome/Edge. CikitoAI lalu punya **ikon dan jendela sendiri** di taskbar/dock, membuka langsung
+layar chat (`start_url: /?cikito=popout`), dan cangkang UI-nya tetap terbuka walau jaringan mati
+(`public/sw.js`; `/api/*` tidak pernah di-cache).
+
+#### Apa yang bertahan saat kamu meninggalkan peramban
+
+| Situasi | Jendela mengambang (PiP) | Aplikasi terpasang (PWA) |
+| --- | --- | --- |
+| Pindah ke aplikasi lain | Tetap tampil **di atas** aplikasi lain | Tetap terbuka |
+| Jendela peramban diperkecil | Tetap tampil | Tetap terbuka |
+| Tab asal ditutup | **Ikut tertutup** | Tetap terbuka |
+| Semua jendela peramban ditutup | **Ikut tertutup** | Tetap terbuka |
+| Peramban benar-benar dikeluarkan | Tertutup | Tertutup |
+| Dibuka lagi nanti | Riwayat, API key, posisi & ukuran kembali | Sama |
+
+Semua state (riwayat chat, API key, posisi bubble, ukuran panel, skala teks, tema) ada di
+`localStorage`, jadi **tidak pernah hilang** hanya karena jendelanya ditutup.
+
+Batasnya, jujur: PWA tetap memakai mesin peramban di perangkatmu dan tidak berjalan di latar
+belakang setelah ditutup. Untuk program desktop yang benar-benar lepas dari peramban, bundelnya
+perlu dibungkus Electron/Tauri.
+
 ### Jalur pengiriman permintaan
 
 | Mode | Alur | Kapan dipakai |
@@ -178,14 +205,17 @@ src/
       SetupView.tsx  form API: penyedia, Base URL, key, model bebas, opsi lanjutan, tes koneksi
       ChatView.tsx   ruang chat: streaming, saran, komposer, gulir pintar
       MessageItem.tsx balon pesan: markdown, salin, buat ulang, hapus
-  hooks/             usePointerDrag, useChat, useMediaQuery/useViewport
+  hooks/             usePointerDrag, useChat, useMediaQuery/useViewport, useInstallApp
   lib/               providers, runtime (mode & apiBase), stream/direct/extension, storage, utils
 public/
   demo-tempel.html   contoh "website orang lain" yang menempelkan widget
-  embed/             hasil build bundel tempel (tidak di-commit)
+  manifest.webmanifest  metadata PWA (nama, ikon, start_url, standalone)
+  sw.js              service worker: installability + cangkang offline
+  embed/, icons/     hasil build (tidak di-commit)
 scripts/
-  smoke-test.mjs     uji alur pengguna end-to-end di jsdom (44 pemeriksaan)
-  build-extension.mjs menyiapkan folder extension/ + membuat ikon PNG tanpa dependensi
+  smoke-test.mjs     uji alur pengguna end-to-end di jsdom (50 pemeriksaan)
+  build-extension.mjs menyiapkan folder extension/
+  make-icons.mjs     menggambar ikon PWA; encoder PNG ada di scripts/lib/icon.mjs
 ```
 
 ## 🔒 Catatan keamanan

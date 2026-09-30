@@ -33,6 +33,7 @@ const MIME = {
   '.woff2': 'font/woff2',
   '.txt': 'text/plain; charset=utf-8',
   '.map': 'application/json; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
 }
 
 function serveStatic(req, res) {
@@ -53,9 +54,12 @@ function serveStatic(req, res) {
 
   const ext = path.extname(filePath).toLowerCase()
   const immutable = filePath.includes(`${path.sep}assets${path.sep}`)
+  const isSW = path.basename(filePath) === 'sw.js'
   res.writeHead(200, {
     'Content-Type': MIME[ext] || 'application/octet-stream',
     'Cache-Control': immutable ? 'public, max-age=31536000, immutable' : 'no-cache',
+    // Service worker harus selalu diperiksa ulang supaya pembaruan cepat masuk.
+    ...(isSW ? { 'Service-Worker-Allowed': '/' } : {}),
   })
   fs.createReadStream(filePath).pipe(res)
 }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
+  AppWindow,
   Bookmark,
   Check,
   Blocks,
@@ -9,23 +10,26 @@ import {
   Globe,
   PictureInPicture2,
   Puzzle,
+  MonitorDown,
   Sparkles,
   TerminalSquare,
 } from 'lucide-react'
 import { cn } from '../lib/utils'
+import { useInstallApp } from '../hooks/useInstallApp'
 
 /**
  * Bagian "Bawa ke mana saja" — empat cara memakai widget di luar situs ini:
  * tempel <script>, bookmarklet, jendela mengambang, dan ekstensi peramban.
  */
 
-type TabId = 'script' | 'bookmarklet' | 'popout' | 'extension'
+type TabId = 'script' | 'bookmarklet' | 'popout' | 'extension' | 'app'
 
 const TABS: { id: TabId; label: string; icon: typeof Globe }[] = [
   { id: 'script', label: 'Tempel di website', icon: Code2 },
   { id: 'bookmarklet', label: 'Bookmarklet', icon: Bookmark },
   { id: 'popout', label: 'Jendela mengambang', icon: PictureInPicture2 },
   { id: 'extension', label: 'Ekstensi peramban', icon: Puzzle },
+  { id: 'app', label: 'Aplikasi desktop', icon: AppWindow },
 ]
 
 function useOrigin() {
@@ -91,6 +95,7 @@ function Row({ k, v }: { k: string; v: string }) {
 export function Distribusi() {
   const origin = useOrigin()
   const [tab, setTab] = useState<TabId>('script')
+  const app = useInstallApp()
 
   const snippet = `<!-- Tempelkan sebelum </body> -->
 <script
@@ -419,6 +424,97 @@ npm run build:extension
                 Klik ikon ekstensi (atau <strong>Ctrl/Cmd + Shift + K</strong>) untuk membuka-tutup
                 bubble di halaman yang sedang dibuka. API key disimpan di penyimpanan lokal
                 peramban dan hanya dikirim ke penyedia yang kamu pilih.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ---------------------------------------------------------- PWA */}
+        {tab === 'app' && (
+          <div className="grid animate-fade-in gap-8 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <h3 className="flex items-center gap-2 text-lg font-bold">
+                <MonitorDown className="size-5 text-brand-500" />
+                Pasang sebagai aplikasi sendiri
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-400">
+                Jendela mengambang tetap milik tab yang membukanya: tutup tabnya, jendela itu ikut
+                hilang. Kalau kamu ingin CikitoAI <strong>punya ikon dan jendela sendiri</strong>{' '}
+                yang bertahan walau semua jendela peramban ditutup, pasang sebagai aplikasi.
+              </p>
+
+              <div className="mt-5">
+                {app.installed ? (
+                  <span className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2.5 text-sm font-bold text-emerald-600 dark:text-emerald-300">
+                    <Check className="size-4" />
+                    Sudah terpasang sebagai aplikasi
+                  </span>
+                ) : app.canInstall ? (
+                  <button
+                    type="button"
+                    onClick={() => void app.install()}
+                    disabled={app.busy}
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 disabled:opacity-60"
+                  >
+                    <MonitorDown className="size-4" />
+                    Pasang CikitoAI di perangkat ini
+                  </button>
+                ) : (
+                  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-3 text-sm text-ink-600 dark:border-white/10 dark:bg-white/5 dark:text-ink-300">
+                    <strong className="block text-xs font-bold tracking-wide text-ink-500 uppercase dark:text-ink-400">
+                      Pasang manual
+                    </strong>
+                    <span className="mt-1 block">
+                      Chrome/Edge: ikon <em>Pasang</em> di ujung kanan address bar, atau menu ⋮ →
+                      “Cast, simpan, dan bagikan” → <em>Instal halaman sebagai aplikasi</em>. Safari
+                      iOS: Bagikan → <em>Tambahkan ke Layar Utama</em>.
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="mt-4 text-xs leading-relaxed text-ink-500 dark:text-ink-400">
+                Aplikasi terpasang membuka langsung layar chat, memakai riwayat dan API key yang
+                sama, dan tetap bisa dibuka meski jaringan mati (jawaban AI tentu tetap butuh
+                internet).
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-bold tracking-wide text-ink-500 uppercase dark:text-ink-400">
+                Apa yang bertahan, apa yang tidak
+              </h4>
+              <div className="mt-2 overflow-hidden rounded-xl border border-black/[0.07] dark:border-white/[0.08]">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-black/[0.04] text-[0.7rem] tracking-wide text-ink-500 uppercase dark:bg-white/5 dark:text-ink-400">
+                    <tr>
+                      <th className="px-3 py-2 font-bold">Situasi</th>
+                      <th className="px-3 py-2 font-bold">Jendela mengambang</th>
+                      <th className="px-3 py-2 font-bold">Aplikasi terpasang</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-ink-600 dark:text-ink-300">
+                    {[
+                      ['Pindah ke aplikasi lain', 'Tetap tampil di atas', 'Tetap terbuka'],
+                      ['Peramban diperkecil', 'Tetap tampil', 'Tetap terbuka'],
+                      ['Tab asal ditutup', 'Ikut tertutup', 'Tetap terbuka'],
+                      ['Semua jendela peramban ditutup', 'Ikut tertutup', 'Tetap terbuka'],
+                      ['Peramban benar-benar dikeluarkan', 'Tertutup', 'Tertutup'],
+                      ['Dibuka lagi nanti', 'Riwayat & API key kembali', 'Riwayat & API key kembali'],
+                    ].map(([a, b, c]) => (
+                      <tr key={a} className="border-t border-black/[0.06] dark:border-white/[0.07]">
+                        <td className="px-3 py-2 font-semibold">{a}</td>
+                        <td className="px-3 py-2">{b}</td>
+                        <td className="px-3 py-2">{c}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 rounded-xl bg-amber-500/[0.08] p-3 text-xs leading-relaxed text-ink-600 dark:text-ink-300">
+                Jujur soal batasnya: aplikasi terpasang tetap memakai mesin peramban di perangkatmu
+                dan tidak berjalan di latar belakang setelah ditutup. Untuk program desktop mandiri
+                yang benar-benar lepas dari peramban, bundelnya perlu dibungkus Electron/Tauri.
               </p>
             </div>
           </div>
