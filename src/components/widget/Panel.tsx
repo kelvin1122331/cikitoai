@@ -232,7 +232,9 @@ export function Panel({
         right: MARGIN,
         bottom: MARGIN,
         top: 'auto',
-        height: `min(${Math.round(clamp((geometry.h / viewport.h) * 100 || 88, 62, 92))}svh, ${viewport.h - MARGIN * 2}px)`,
+        height: `${Math.round(
+          clamp(geometry.h, Math.min(viewport.h * 0.62, viewport.h - MARGIN * 2), viewport.h - MARGIN * 2),
+        )}px`,
         transform: sheetOffset ? `translateY(${sheetOffset}px)` : undefined,
         transition: sheetOffset ? 'none' : 'transform 260ms cubic-bezier(0.22,1,0.36,1)',
         fontSize: `${14 * scale}px`,
